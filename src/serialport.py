@@ -67,7 +67,6 @@ class SerialPort(object):
         self.receiveQueue = queue.Queue(1000)
         self.sendQueue = queue.Queue(1000)
 
-
     def open(self, port, baudrate, databit, checkbit, stopbit, xonxoff, rtscts, dsrdtr):
         if self.serial is None:
             try:
@@ -83,10 +82,12 @@ class SerialPort(object):
 
     def close(self):
         if self.serial is not None:
-            self.receiveThread.stop()
             self.sendThread.stop()
+            self.receiveThread.stop()
             self.serial.close()
             self.serial = None
+            return True
+        return False
 
     def write(self, data):
         if self.serial is not None:
