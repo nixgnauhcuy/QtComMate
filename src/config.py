@@ -14,7 +14,6 @@ config_param = {
     "receiveHexEn": '0',
     "timestampEn": '0',
     "sendHexEn": '0',
-    "sendRepeatenEn": '0',
     "sendRepeatentDuration": '1000',
     "sendLineFeedIndex": '0',
     "xonxoff": '0',

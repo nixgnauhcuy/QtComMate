@@ -32,7 +32,12 @@ class SerialPortReceiveDataThread(QThread):
             try:
                 data = self.parent.port.read()
                 if data:
-                    self.dataReceivedSignal.emit(data)
+                    if self.parent.SerialReceiveHexCheckBox.isChecked():
+                        data_hex = bytes(data, encoding='utf-8').hex()
+                        data_hex_spaced = ' ' + ' '.join([data_hex[i:i+2] for i in range(0, len(data_hex), 2)])
+                        self.dataReceivedSignal.emit(data_hex_spaced)
+                    else:
+                        self.dataReceivedSignal.emit(data)
             except Exception as e:
                 print(e)
                 continue
@@ -78,7 +83,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialReceiveHexCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialReceiveTimestampCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialSendHexCheckBox.stateChanged.connect(self.serialComConfigCb)
-        self.SerialSendRepeatCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialSendLineFeedComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialSoftFlowControlCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialHardFlowControlDSRDTRCheckBox.stateChanged.connect(self.serialComConfigCb)
@@ -109,7 +113,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialReceiveHexCheckBox.setChecked(int(config.config_param["receiveHexEn"]))
         self.SerialReceiveTimestampCheckBox.setChecked(int(config.config_param["timestampEn"]))
         self.SerialSendHexCheckBox.setChecked(int(config.config_param["sendHexEn"]))
-        self.SerialSendRepeatCheckBox.setChecked(int(config.config_param["sendRepeatenEn"]))
         self.SerialSendRepeatDurationLineEdit.setText(config.config_param["sendRepeatentDuration"])
         self.SerialSendLineFeedComboBox.setCurrentIndex(int(config.config_param["sendLineFeedIndex"]))
         self.SerialSoftFlowControlCheckBox.setChecked(int(config.config_param["xonxoff"]))
@@ -193,7 +196,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         config.configini.setValue("sendRepeatentDuration", value)
         
 
-
     def serialComConfigCb(self, value):
         curObjectName = self.sender().objectName()
         if curObjectName == self.SerialBaudrateComboBox.objectName():
@@ -210,8 +212,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             config.configini.setValue("timestampEn", value)
         elif curObjectName == self.SerialSendHexCheckBox.objectName():
             config.configini.setValue("sendHexEn", value)
-        elif curObjectName == self.SerialSendRepeatCheckBox.objectName():
-            config.configini.setValue("sendRepeatenEn", value)
         elif curObjectName == self.SerialSendLineFeedComboBox.objectName():
             config.configini.setValue("sendLineFeedIndex", value)
         elif curObjectName == self.SerialSoftFlowControlCheckBox.objectName():
