@@ -6,9 +6,9 @@ import config
 import serialport
 
 from Ui_main import Ui_MainWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import pyqtSignal, QThread, QTranslator
+from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer
 from PyQt6 import QtGui
 
 class SerialPortReceiveDataThread(QThread):
@@ -53,6 +53,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         
 
         self.port = serialport.SerialPort()
+        self.warningMsgBox = QMessageBox()
+        self.warningMsgBox.setIcon(QMessageBox.Icon.Warning)
+        self.warningMsgBox.setWindowTitle("Warning")
+        self.warningMsgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+
+        self.SerialSendRepeatTimer = QTimer()
+        self.SerialSendRepeatTimer.timeout.connect(self.SerialSendRepeatTimerCb)
 
         self.CnLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
         self.EnLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
@@ -60,6 +67,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
         self.SerialReceiveClearPushButton.clicked.connect(self.serialReceiveClearPushButtonCb)
+
+        self.SerialSendRepeatCheckBox.stateChanged.connect(self.SerialSendRepeatCheckCb)
+        self.SerialSendRepeatDurationLineEdit.textChanged.connect(self.SerialSendRepeatDurationLineEditCb)
 
         self.SerialBaudrateComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialStopBitComboBox.currentIndexChanged.connect(self.serialComConfigCb)
@@ -69,7 +79,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialReceiveTimestampCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialSendHexCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialSendRepeatCheckBox.stateChanged.connect(self.serialComConfigCb)
-        self.SerialSendRepeatDurationLineEdit.textChanged.connect(self.serialComConfigCb)
         self.SerialSendLineFeedComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialSoftFlowControlCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialHardFlowControlDSRDTRCheckBox.stateChanged.connect(self.serialComConfigCb)
@@ -82,7 +91,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         _app.installTranslator(self.trans)
         self.retranslateUi(self)
 
-        self.SerialSendRepeatDurationLineEdit.setValidator(QtGui.QIntValidator(0, 9999))
+        self.SerialSendRepeatDurationLineEdit.setValidator(QtGui.QIntValidator(0, 100000))
         
         for action in self.MenuLanguage.actions():
             if action.text() == config.config_param["language"]:
@@ -106,7 +115,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialSoftFlowControlCheckBox.setChecked(int(config.config_param["xonxoff"]))
         self.SerialHardFlowControlDSRDTRCheckBox.setChecked(int(config.config_param["dsrdtr"]))
         self.SerialHardFlowControlRTSCTSCheckBox.setChecked(int(config.config_param["rtscts"]))
-
 
     def serialConnectPortSwitch(self, en):
         res = False
@@ -157,8 +165,33 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialReceiveTextEdit.insertPlainText(data)
 
     def serialReceiveClearPushButtonCb(self):
-        if self.SerialReceiveTextEdit.toPlainText() == "":
+        if self.SerialReceiveTextEdit.toPlainText() != "":
             self.SerialReceiveTextEdit.clear()
+
+
+    def SerialSendRepeatCheckCb(self, value):
+        if value != 0:
+            self.SerialSendRepeatDurationLineEdit.setEnabled(False)
+            self.SerialSendRepeatTimer.start(int(self.SerialSendRepeatDurationLineEdit.text()))
+        else:
+            self.SerialSendRepeatDurationLineEdit.setEnabled(True)
+            self.SerialSendRepeatTimer.stop()
+
+    def SerialSendRepeatTimerCb(self):
+        sendData = self.SerialSendTextEdit.toPlainText()
+        if sendData == "":
+            return
+        self.port.write(str.encode(sendData))
+
+    def SerialSendRepeatDurationLineEditCb(self, value):
+        if value == '0' or value == "":
+            value = 1000
+            self.SerialSendRepeatDurationLineEdit.setText("1000")
+            self.warningMsgBox.setText("range:(1-100000)")
+            self.warningMsgBox.exec()
+
+        config.configini.setValue("sendRepeatentDuration", value)
+        
 
 
     def serialComConfigCb(self, value):
@@ -179,8 +212,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             config.configini.setValue("sendHexEn", value)
         elif curObjectName == self.SerialSendRepeatCheckBox.objectName():
             config.configini.setValue("sendRepeatenEn", value)
-        elif curObjectName == self.SerialSendRepeatDurationLineEdit.objectName():
-            config.configini.setValue("sendRepeatentDuration", value)
         elif curObjectName == self.SerialSendLineFeedComboBox.objectName():
             config.configini.setValue("sendLineFeedIndex", value)
         elif curObjectName == self.SerialSoftFlowControlCheckBox.objectName():

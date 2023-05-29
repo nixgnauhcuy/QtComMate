@@ -1,19 +1,27 @@
-# :computer: QtComMate - 基于 pyqt6 的简单串口工具
+<div align="right">
+  Language:
+  🇺🇸
+  <a title="Chinese" href="/README_CN.md">🇨🇳</a>
+</div>
 
-QtComMate 是一个基于 pyqt6 的简单串口工具，旨在帮助开发人员轻松地连接和通信串口设备。该工具提供了简单易用的用户界面，并支持多种串口参数配置和数据传输方式。
+# :computer: QtComMate - Simple Serial Port Tool Based on pyqt6
 
-## :gear: 功能特性
+QtComMate is a simple serial port tool based on pyqt6, designed to help developers easily connect and communicate with serial port devices. The tool provides a user-friendly interface and supports various serial port parameter configurations and data transmission modes.
 
-- [x] 用户界面友好，操作简单易用。
-- [x] 支持数据发送和接收功能。
-- [x] 支持常用的串口参数配置，包括波特率、数据位、停止位、奇偶校验等。
-- [ ] 支持多种数据传输方式，包括 ASCII、HEX、UTF-8 等。
-- [ ] 支持数据记录和保存功能。
+## :gear: Features
+
+- [x] User-friendly interface, easy to operate.
+- [x] Supports data sending and receiving functions.
+- [x] Supports common serial port parameter configurations, including baud rate, data bits, stop bits, parity, etc.
+- [x] Support timer sending function.
+- [ ] Supports multiple data transmission modes, including ASCII, HEX, UTF-8, etc.
+- [ ] Supports data recording and saving functions.
+- [x] Supports language switching.
 
 
-## :rocket: 快速开始
+## :rocket: Quick Start
 
-### 安装
+### Installation
 
 ```
 git clone https://github.com/nixgnauhcuy/QtComMate
@@ -23,10 +31,10 @@ python main.py
 ```
 
 
-## :mailbox_with_mail: 反馈与贡献
+## :mailbox_with_mail: Feedback and Contribution
 
-如果您发现任何 bug，或者有任何建议或想法，请随时提交 issue 或者 pull request。欢迎并感谢您的贡献！
+If you find any bugs, or have any suggestions or ideas, please feel free to submit an issue or pull request. Your contributions are welcome and appreciated!
 
-## :page_facing_up: 许可证
+## :page_facing_up: License
 
-[MIT 许可证](https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE)
+[MIT License](https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE)

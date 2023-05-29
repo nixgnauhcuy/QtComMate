@@ -51,13 +51,12 @@ class SerialPortSendThread(threading.Thread):
                 break
             try:
                 if not self.parent.sendQueue.empty():
-                    send_data = self.parent.sendQueue.get(False)
+                    send_data = self.parent.sendQueue.get()
                     self.parent.serial.write(send_data)
-                else:
-                    continue
-            except queue.Empty as e:
+            except Exception as e:
                 print(e)
                 continue
+
 
 
 class SerialPort(object):
@@ -82,8 +81,16 @@ class SerialPort(object):
 
     def close(self):
         if self.serial is not None:
+            with self.receiveQueue.mutex:
+                self.receiveQueue.queue.clear()
+
+            with self.sendQueue.mutex:
+                self.sendQueue.queue.clear()
+
             self.sendThread.stop()
             self.receiveThread.stop()
+            self.sendThread.join()
+            self.receiveThread.join()
             self.serial.close()
             self.serial = None
             return True
