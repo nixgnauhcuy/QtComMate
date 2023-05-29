@@ -6,6 +6,7 @@ USER_CONFIG_INI = 'user.ini'
 configini = QSettings(USER_CONFIG_INI, QSettings.Format.IniFormat)
 
 config_param = {
+    "language": 'zh-CN',
     "baudrateIndex": '12',
     "stopBitIndex": '0',
     "dataBitIndex": '3',

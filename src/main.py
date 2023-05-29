@@ -1,15 +1,15 @@
 import sys
 import threading
 
-import main_qrc
+import resources_rc
 import config
 import serialport
 
 from Ui_main import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import pyqtSignal, QThread
-
+from PyQt6.QtCore import pyqtSignal, QThread, QTranslator
+from PyQt6 import QtGui
 
 class SerialPortReceiveDataThread(QThread):
     dataReceivedSignal = pyqtSignal(str)
@@ -44,12 +44,18 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.setWindowIcon(QIcon(":/icon/main.ico"))
+        self.setWindowIcon(QIcon(":Resources/icon/main.ico"))
+
+        self.trans = QTranslator()
 
         config.init()
         self.serialUiInit()
+        
 
         self.port = serialport.SerialPort()
+
+        self.CnLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
+        self.EnLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
 
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
@@ -71,6 +77,22 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         
 
     def serialUiInit(self):
+        self.trans.load(":Resources/translations/" + config.config_param["language"] +".qm")
+        _app = QApplication.instance()
+        _app.installTranslator(self.trans)
+        self.retranslateUi(self)
+
+        self.SerialSendRepeatDurationLineEdit.setValidator(QtGui.QIntValidator(0, 9999))
+        
+        for action in self.MenuLanguage.actions():
+            if action.text() == config.config_param["language"]:
+                action.setChecked(True)
+                action.setEnabled(False)
+            else:
+                action.setChecked(False)
+                action.setEnabled(True)
+
+
         self.SerialBaudrateComboBox.setCurrentIndex(int(config.config_param["baudrateIndex"]))
         self.SerialStopBitComboBox.setCurrentIndex(int(config.config_param["stopBitIndex"]))
         self.SerialDataBitcomboBox.setCurrentIndex(int(config.config_param["dataBitIndex"]))
@@ -172,6 +194,29 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             self.serialConnectPortSwitch(False)
             self.serialConnectPortSwitch(True)
 
+    def serialLanguageSwitchCb(self, value):
+        if value == False:
+            return
+        curObjectName = self.sender().objectName()
+        
+        if curObjectName == self.CnLanguageAction.objectName():
+                config.configini.setValue("language", self.CnLanguageAction.text())
+                self.trans.load(":Resources/translations/zh_CN.qm")
+        elif curObjectName == self.EnLanguageAction.objectName():
+                config.configini.setValue("language", self.EnLanguageAction.text())
+                self.trans.load(":Resources/translations/en.qm")
+
+        for action in self.MenuLanguage.actions():
+            if action.objectName() == curObjectName:
+                action.setChecked(True)
+                action.setEnabled(False)
+            else:
+                action.setChecked(False)
+                action.setEnabled(True)
+
+        _app = QApplication.instance()
+        _app.installTranslator(self.trans)
+        self.retranslateUi(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

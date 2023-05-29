@@ -1,6 +1,8 @@
 <!DOCTYPE RCC>
 <RCC>
-    <qresource>
+    <qresource prefix="/Resources">
         <file>icon/main.ico</file>
+        <file>translations/zh_CN.qm</file>
+        <file>translations/en.qm</file>
     </qresource>
 </RCC>
