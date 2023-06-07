@@ -164,7 +164,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if self.SerialSendTextEdit.toPlainText() == "":
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
-            self.port.write(bytes.fromhex(self.SerialSendTextEdit.toPlainText().replace(' ', '')))
+            hex_string = self.SerialSendTextEdit.toPlainText().replace(' ', '')
+
+            data = ''
+            for x in range(0, len(hex_string), 2):
+                data += chr(int(hex_string[x:x+2], 16))
+    
+            self.port.write(bytes(data,encoding='utf-8'))
         else:
             self.port.write(str.encode(self.SerialSendTextEdit.toPlainText()))
 
@@ -215,7 +221,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if self.SerialSendTextEdit.toPlainText() == "":
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
-            self.port.write(bytes.fromhex(self.SerialSendTextEdit.toPlainText().replace(' ', '')))
+            hex_string = self.SerialSendTextEdit.toPlainText().replace(' ', '')
+
+            data = ''
+            for x in range(0, len(hex_string), 2):
+                data += chr(int(hex_string[x:x+2], 16))
+    
+            self.port.write(bytes(data,encoding='utf-8'))
         else:
             self.port.write(str.encode(self.SerialSendTextEdit.toPlainText()))
 
