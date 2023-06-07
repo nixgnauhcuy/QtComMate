@@ -1,6 +1,6 @@
 import sys
 import threading
-
+import re
 import resources_rc
 import config
 import serialport
@@ -56,6 +56,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         config.init()
         self.serialUiInit()
         
+        self.hex_pattern = re.compile(r'^[0-9a-fA-F]+$')
 
         self.port = serialport.SerialPort()
         self.warningMsgBox = QMessageBox()
@@ -71,6 +72,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
+        self.SerialSendTextEdit.document().contentsChange.connect(self.serialSendTextChangeCb)
         self.SerialReceiveClearPushButton.clicked.connect(self.serialReceiveClearPushButtonCb)
 
         self.SerialSendRepeatCheckBox.stateChanged.connect(self.serialSendRepeatCheckCb)
@@ -172,6 +174,33 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
     def serialReceiveClearPushButtonCb(self):
         if self.SerialReceiveTextEdit.toPlainText() != "":
             self.SerialReceiveTextEdit.clear()
+
+    def serialSendTextChangeCb(self, position, charsRemoved, charsAdded):
+        if not self.SerialSendHexCheckBox.isChecked():
+            return
+        
+        if charsAdded > 0:
+            beforeText = self.SerialSendTextEdit.toPlainText()[:position]
+            text = self.SerialSendTextEdit.toPlainText()[position:position+charsAdded]
+            afterText = self.SerialSendTextEdit.toPlainText()[position+charsAdded:]
+            
+            newText = ""
+            
+            for letter in text:
+                if self.hex_pattern.match(letter):
+                    newText += letter
+
+            newText = beforeText+newText+afterText
+
+            cursor = self.SerialSendTextEdit.textCursor()
+
+            old_position = cursor.position()
+            self.SerialSendTextEdit.document().blockSignals(True)
+            self.SerialSendTextEdit.setPlainText(newText)
+            self.SerialSendTextEdit.document().blockSignals(False)
+
+            cursor.setPosition(old_position)
+            self.SerialSendTextEdit.setTextCursor(cursor)
 
 
     def serialSendRepeatCheckCb(self, value):
