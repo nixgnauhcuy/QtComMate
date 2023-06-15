@@ -27,7 +27,7 @@ class SerialPortReceiveThread(threading.Thread):
                     continue
                 if self.parent.receiveQueue.full():
                     self.parent.receiveQueue.get(False)
-                self.parent.receiveQueue.put(recData.decode(errors='replace'))
+                self.parent.receiveQueue.put(recData)
             except Exception as e:
                 print(e)
                 continue

@@ -1,7 +1,7 @@
 <div align="right">
   语言:
-  中文
-  <a title="English" href="/README.md">英文</a>
+  cn
+  <a title="English" href="/README.md">us</a>
 </div>
 
 # :computer: QtComMate - 基于 pyqt6 的简单串口工具

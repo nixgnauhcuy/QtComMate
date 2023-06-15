@@ -4,6 +4,7 @@ import re
 import resources_rc
 import config
 import serialport
+import binascii
 
 from Ui_main import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
@@ -33,11 +34,11 @@ class SerialPortReceiveDataThread(QThread):
                 data = self.parent.port.read()
                 if data:
                     if self.parent.SerialReceiveHexCheckBox.isChecked():
-                        data_hex = bytes(data, encoding='utf-8').hex()
+                        data_hex = str(binascii.b2a_hex(data))[2:-1]
                         data_hex_spaced = ' ' + ' '.join([data_hex[i:i+2] for i in range(0, len(data_hex), 2)])
                         self.dataReceivedSignal.emit(data_hex_spaced)
                     else:
-                        self.dataReceivedSignal.emit(data)
+                        self.dataReceivedSignal.emit(data.decode('iso-8859-1'))
             except Exception as e:
                 print(e)
                 continue
