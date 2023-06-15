@@ -4,5 +4,7 @@
         <file>icon/main.ico</file>
         <file>translations/zh_CN.qm</file>
         <file>translations/en.qm</file>
+        <file>img/connect.png</file>
+        <file>img/unconnect.png</file>
     </qresource>
 </RCC>

@@ -7,8 +7,8 @@ import serialport
 import binascii
 
 from Ui_main import Ui_MainWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel
+from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer
 from PyQt6 import QtGui
 
@@ -59,6 +59,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         
         self.hex_pattern = re.compile(r'^[0-9a-fA-F]+$')
 
+        self.sendCountSum = 0
+        self.receiveCountSum = 0
+
         self.port = serialport.SerialPort()
         self.warningMsgBox = QMessageBox()
         self.warningMsgBox.setIcon(QMessageBox.Icon.Warning)
@@ -97,6 +100,17 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         _app = QApplication.instance()
         _app.installTranslator(self.trans)
         self.retranslateUi(self)
+
+        self.connStatusLabel = QLabel()
+        self.sendByteCountLabel = QLabel("S:0")
+        self.receiveByteCountsLabel = QLabel("R:0")
+        self.tmpLabel = QLabel() # tmp 
+        self.connStatusLabel.setPixmap(QPixmap(":Resources/img/unconnect.png"))
+        self.SerialStatusBar.addPermanentWidget(self.connStatusLabel, stretch=0)
+        self.SerialStatusBar.addPermanentWidget(self.tmpLabel, stretch=4) # tmp
+        self.SerialStatusBar.addPermanentWidget(self.sendByteCountLabel, stretch=1)
+        self.SerialStatusBar.addPermanentWidget(self.receiveByteCountsLabel, stretch=1)
+
 
         self.SerialSendRepeatDurationLineEdit.setValidator(QtGui.QIntValidator(0, 100000))
         
@@ -147,6 +161,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
     def serialConnectComPushButtonCb(self):
         if self.port.serial is None and self.SerialComboBox.currentText() != "":
+            self.connStatusLabel.setPixmap(QPixmap(":Resources/img/connect.png"))
             res = self.serialConnectPortSwitch(True)
             if res == True:
                 if self.CnLanguageAction.isChecked():
@@ -154,6 +169,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
                 else:
                     self.SerialConnectComPushButton.setText("Disconnect")
         elif self.port.serial is not None:
+            self.connStatusLabel.setPixmap(QPixmap(":Resources/img/unconnect.png"))
             res = self.serialConnectPortSwitch(False)
             if res == True:
                 if self.CnLanguageAction.isChecked():
@@ -176,9 +192,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             self.port.write(str.encode(self.SerialSendTextEdit.toPlainText()))
 
     def readSerialPortDataSignalCb(self, data):
+        self.receiveCountSum +=  len(data)
+        self.receiveByteCountsLabel.setText("R:" + str(self.receiveCountSum))
         self.SerialReceiveTextEdit.insertPlainText(data)
 
     def serialReceiveClearPushButtonCb(self):
+        self.receiveCountSum = 0
+        self.receiveByteCountsLabel.setText("R:0")
         if self.SerialReceiveTextEdit.toPlainText() != "":
             self.SerialReceiveTextEdit.clear()
 
