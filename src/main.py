@@ -77,6 +77,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
         self.SerialSendTextEdit.document().contentsChange.connect(self.serialSendTextChangeCb)
+        self.SerialSendClearPushButton.clicked.connect(self.serialSendClearPushButtonCb)
         self.SerialReceiveClearPushButton.clicked.connect(self.serialReceiveClearPushButtonCb)
 
         self.SerialSendRepeatCheckBox.stateChanged.connect(self.serialSendRepeatCheckCb)
@@ -103,13 +104,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
         self.connStatusLabel = QLabel()
         self.sendByteCountLabel = QLabel("S:0")
-        self.receiveByteCountsLabel = QLabel("R:0")
+        self.receiveByteCountLabel = QLabel("R:0")
         self.tmpLabel = QLabel() # tmp 
         self.connStatusLabel.setPixmap(QPixmap(":Resources/img/unconnect.png"))
         self.SerialStatusBar.addPermanentWidget(self.connStatusLabel, stretch=0)
         self.SerialStatusBar.addPermanentWidget(self.tmpLabel, stretch=4) # tmp
         self.SerialStatusBar.addPermanentWidget(self.sendByteCountLabel, stretch=1)
-        self.SerialStatusBar.addPermanentWidget(self.receiveByteCountsLabel, stretch=1)
+        self.SerialStatusBar.addPermanentWidget(self.receiveByteCountLabel, stretch=1)
 
 
         self.SerialSendRepeatDurationLineEdit.setValidator(QtGui.QIntValidator(0, 100000))
@@ -177,6 +178,11 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
                 else:
                     self.SerialConnectComPushButton.setText("Connect")
 
+    def serialSendPortWirte(self, data):
+        self.sendCountSum += len(data)
+        self.sendByteCountLabel.setText("S:" + str(self.sendCountSum))
+        self.port.write(data)
+
     def serialSendComPushButtonCb(self):
         if self.SerialSendTextEdit.toPlainText() == "":
             return
@@ -187,18 +193,24 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             for x in range(0, len(hex_string), 2):
                 data += chr(int(hex_string[x:x+2], 16))
     
-            self.port.write(bytes(data,encoding='utf-8'))
+            self.serialSendPortWirte(bytes(data,encoding='utf-8'))
         else:
-            self.port.write(str.encode(self.SerialSendTextEdit.toPlainText()))
+            self.serialSendPortWirte(str.encode(self.SerialSendTextEdit.toPlainText()))
+
+    def serialSendClearPushButtonCb(self):
+        self.sendCountSum = 0
+        self.sendByteCountLabel.setText("S:0")
+        self.SerialSendTextEdit.clear()
+
 
     def readSerialPortDataSignalCb(self, data):
         self.receiveCountSum +=  len(data)
-        self.receiveByteCountsLabel.setText("R:" + str(self.receiveCountSum))
+        self.receiveByteCountLabel.setText("R:" + str(self.receiveCountSum))
         self.SerialReceiveTextEdit.insertPlainText(data)
 
     def serialReceiveClearPushButtonCb(self):
         self.receiveCountSum = 0
-        self.receiveByteCountsLabel.setText("R:0")
+        self.receiveByteCountLabel.setText("R:0")
         if self.SerialReceiveTextEdit.toPlainText() != "":
             self.SerialReceiveTextEdit.clear()
 
@@ -248,9 +260,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             for x in range(0, len(hex_string), 2):
                 data += chr(int(hex_string[x:x+2], 16))
     
-            self.port.write(bytes(data,encoding='utf-8'))
+            self.serialSendPortWirte(bytes(data,encoding='utf-8'))
         else:
-            self.port.write(str.encode(self.SerialSendTextEdit.toPlainText()))
+            self.serialSendPortWirte(str.encode(self.SerialSendTextEdit.toPlainText()))
 
 
     def serialSendRepeatDurationLineEditCb(self, value):
