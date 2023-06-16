@@ -156,6 +156,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
                 self.receiveSerialPortThread.start()
         else:
             self.receiveSerialPortThread.stop()
+            self.SerialSendRepeatCheckBox.setChecked(False) # disconnect need to close send timer
             res = self.port.close()
         return res
 
@@ -206,6 +207,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
     def readSerialPortDataSignalCb(self, data):
         self.receiveCountSum +=  len(data)
         self.receiveByteCountLabel.setText("R:" + str(self.receiveCountSum))
+        self.SerialReceiveTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         self.SerialReceiveTextEdit.insertPlainText(data)
 
     def serialReceiveClearPushButtonCb(self):

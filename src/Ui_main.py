@@ -96,6 +96,7 @@ class Ui_MainWindow(object):
         self.SerialReceiveFormLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.SerialConnectComPushButton)
         self.SerialReceiveTextEdit = QtWidgets.QTextEdit(self.SerialReceiveGroupBox)
         self.SerialReceiveTextEdit.setGeometry(QtCore.QRect(190, 30, 591, 290))
+        self.SerialReceiveTextEdit.setUndoRedoEnabled(False)
         self.SerialReceiveTextEdit.setReadOnly(True)
         self.SerialReceiveTextEdit.setObjectName("SerialReceiveTextEdit")
         self.SerialSendGroupBox = QtWidgets.QGroupBox(self.centralWidget)

@@ -30,6 +30,11 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## :camera: Previews
+
+### windows
+![](/docs/images/qtcommate-win-en.png)
+![](/docs/images/qtcommate-win-cn.png)
 
 ## :mailbox_with_mail: Feedback and Contribution
 
