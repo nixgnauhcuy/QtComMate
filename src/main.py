@@ -165,18 +165,14 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             self.connStatusLabel.setPixmap(QPixmap(":Resources/img/connect.png"))
             res = self.serialConnectPortSwitch(True)
             if res == True:
-                if self.CnLanguageAction.isChecked():
-                    self.SerialConnectComPushButton.setText("断开")
-                else:
-                    self.SerialConnectComPushButton.setText("Disconnect")
+                self.SerialConnectComPushButton.setText(self.tr("Disconnect"))
+
         elif self.port.serial is not None:
             self.connStatusLabel.setPixmap(QPixmap(":Resources/img/unconnect.png"))
             res = self.serialConnectPortSwitch(False)
             if res == True:
-                if self.CnLanguageAction.isChecked():
-                    self.SerialConnectComPushButton.setText("连接COM")
-                else:
-                    self.SerialConnectComPushButton.setText("Connect")
+                self.SerialConnectComPushButton.setText(self.tr("Connect"))
+
 
     def serialSendPortWirte(self, data):
         self.sendCountSum += len(data)

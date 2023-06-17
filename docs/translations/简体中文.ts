@@ -4,329 +4,342 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="src/Ui_main.py" line="215"/>
+        <location filename="../../src/Ui_main.py" line="208"/>
         <source>QtComMate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="216"/>
+        <location filename="../../src/Ui_main.py" line="209"/>
         <source>Send Area</source>
         <translation>发送区</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="272"/>
+        <location filename="../../src/Ui_main.py" line="265"/>
         <source>Hex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="218"/>
+        <location filename="../../src/Ui_main.py" line="211"/>
         <source>Send</source>
         <translation>发送</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="274"/>
+        <location filename="../../src/Ui_main.py" line="267"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="220"/>
+        <location filename="../../src/Ui_main.py" line="213"/>
         <source>Software Flow Control</source>
         <translation>软件流控</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="221"/>
+        <location filename="../../src/Ui_main.py" line="214"/>
         <source>xon/xoff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="222"/>
+        <location filename="../../src/Ui_main.py" line="215"/>
         <source>Hardware Flow Control</source>
         <translation>硬件流控</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="223"/>
+        <location filename="../../src/Ui_main.py" line="216"/>
         <source>dsr/dtr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="224"/>
+        <location filename="../../src/Ui_main.py" line="217"/>
         <source>rts/cts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="225"/>
+        <location filename="../../src/Ui_main.py" line="218"/>
         <source>Repeat</source>
         <translation>重复</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="226"/>
+        <location filename="../../src/Ui_main.py" line="219"/>
         <source>ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="227"/>
+        <location filename="../../src/Ui_main.py" line="220"/>
         <source>New Line</source>
         <translation>新行</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="267"/>
+        <location filename="../../src/Ui_main.py" line="260"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="229"/>
+        <location filename="../../src/Ui_main.py" line="222"/>
         <source>/r/n</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="230"/>
+        <location filename="../../src/Ui_main.py" line="223"/>
         <source>/n</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="231"/>
+        <location filename="../../src/Ui_main.py" line="224"/>
         <source>Receive Area</source>
         <translation>接收区</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="232"/>
+        <location filename="../../src/Ui_main.py" line="225"/>
         <source>COM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="233"/>
+        <location filename="../../src/Ui_main.py" line="226"/>
         <source>Baudrate</source>
         <translation>波特率</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="234"/>
+        <location filename="../../src/Ui_main.py" line="227"/>
         <source>custom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="235"/>
+        <location filename="../../src/Ui_main.py" line="228"/>
         <source>110</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="236"/>
+        <location filename="../../src/Ui_main.py" line="229"/>
         <source>300</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="237"/>
+        <location filename="../../src/Ui_main.py" line="230"/>
         <source>600</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="238"/>
+        <location filename="../../src/Ui_main.py" line="231"/>
         <source>1200</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="239"/>
+        <location filename="../../src/Ui_main.py" line="232"/>
         <source>2400</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="240"/>
+        <location filename="../../src/Ui_main.py" line="233"/>
         <source>4800</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="241"/>
+        <location filename="../../src/Ui_main.py" line="234"/>
         <source>9600</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="242"/>
+        <location filename="../../src/Ui_main.py" line="235"/>
         <source>19200</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="243"/>
+        <location filename="../../src/Ui_main.py" line="236"/>
         <source>38400</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="244"/>
+        <location filename="../../src/Ui_main.py" line="237"/>
         <source>57600</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="245"/>
+        <location filename="../../src/Ui_main.py" line="238"/>
         <source>76800</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="246"/>
+        <location filename="../../src/Ui_main.py" line="239"/>
         <source>115200</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="247"/>
+        <location filename="../../src/Ui_main.py" line="240"/>
         <source>128000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="248"/>
+        <location filename="../../src/Ui_main.py" line="241"/>
         <source>230400</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="249"/>
+        <location filename="../../src/Ui_main.py" line="242"/>
         <source>256000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="250"/>
+        <location filename="../../src/Ui_main.py" line="243"/>
         <source>460800</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="251"/>
+        <location filename="../../src/Ui_main.py" line="244"/>
         <source>512000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="252"/>
+        <location filename="../../src/Ui_main.py" line="245"/>
         <source>576000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="253"/>
+        <location filename="../../src/Ui_main.py" line="246"/>
         <source>921600</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="254"/>
+        <location filename="../../src/Ui_main.py" line="247"/>
         <source>1000000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="255"/>
+        <location filename="../../src/Ui_main.py" line="248"/>
         <source>1500000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="256"/>
+        <location filename="../../src/Ui_main.py" line="249"/>
         <source>2000000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="257"/>
+        <location filename="../../src/Ui_main.py" line="250"/>
         <source>Stopbit</source>
         <translation>停止位</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="258"/>
+        <location filename="../../src/Ui_main.py" line="251"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="259"/>
+        <location filename="../../src/Ui_main.py" line="252"/>
         <source>1.5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="260"/>
+        <location filename="../../src/Ui_main.py" line="253"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="261"/>
+        <location filename="../../src/Ui_main.py" line="254"/>
         <source>Databit</source>
         <translation>数据位</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="262"/>
+        <location filename="../../src/Ui_main.py" line="255"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="263"/>
+        <location filename="../../src/Ui_main.py" line="256"/>
         <source>6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="264"/>
+        <location filename="../../src/Ui_main.py" line="257"/>
         <source>7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="265"/>
+        <location filename="../../src/Ui_main.py" line="258"/>
         <source>8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="266"/>
+        <location filename="../../src/Ui_main.py" line="259"/>
         <source>Checksum</source>
         <translation>校验位</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="268"/>
+        <location filename="../../src/Ui_main.py" line="261"/>
         <source>Even</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="269"/>
+        <location filename="../../src/Ui_main.py" line="262"/>
         <source>Odd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="270"/>
+        <location filename="../../src/Ui_main.py" line="263"/>
         <source>Mark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="271"/>
+        <location filename="../../src/Ui_main.py" line="264"/>
         <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="273"/>
+        <location filename="../../src/Ui_main.py" line="266"/>
         <source>Timestamp</source>
         <translation>时间戳</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="275"/>
+        <location filename="../../src/Ui_main.py" line="268"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="276"/>
+        <location filename="../../src/Ui_main.py" line="269"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="277"/>
+        <location filename="../../src/Ui_main.py" line="270"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="278"/>
+        <location filename="../../src/Ui_main.py" line="271"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="279"/>
+        <location filename="../../src/Ui_main.py" line="272"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="280"/>
+        <location filename="../../src/Ui_main.py" line="273"/>
         <source>简体中文</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="281"/>
+        <location filename="../../src/Ui_main.py" line="274"/>
         <source>繁體中文</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Ui_main.py" line="282"/>
+        <location filename="../../src/Ui_main.py" line="275"/>
         <source>Font Settings</source>
         <translation>字体设置</translation>
+    </message>
+</context>
+<context>
+    <name>MyPyQT_Form</name>
+    <message>
+        <location filename="../../src/main.py" line="169"/>
+        <source>Disconnect</source>
+        <translation>断开连接</translation>
+    </message>
+    <message>
+        <location filename="../../src/main.py" line="176"/>
+        <source>Connect</source>
+        <translation>连接</translation>
     </message>
 </context>
 </TS>
