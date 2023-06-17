@@ -7,8 +7,8 @@ import serialport
 import binascii
 
 from Ui_main import Ui_MainWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog
+from PyQt6.QtGui import QIcon, QPixmap, QFont
 from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer
 from PyQt6 import QtGui
 
@@ -52,9 +52,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
         self.setWindowIcon(QIcon(":Resources/icon/main.ico"))
 
+        self.app = QApplication.instance()
         self.trans = QTranslator()
 
-        config.init()
         self.serialUiInit()
         
         self.hex_pattern = re.compile(r'^[0-9a-fA-F]+$')
@@ -71,8 +71,11 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialSendRepeatTimer = QTimer()
         self.SerialSendRepeatTimer.timeout.connect(self.serialSendRepeatTimerCb)
 
-        self.CnLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
-        self.EnLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
+        # Language
+        self.EnglishLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
+        self.SimplifiedChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
+        self.TraditionalChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
+        self.FontSetAction.triggered.connect(self.serialFontSetCb)
 
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
@@ -97,11 +100,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         
 
     def serialUiInit(self):
-        self.trans.load(":Resources/translations/" + config.config_param["language"] +".qm")
-        _app = QApplication.instance()
-        _app.installTranslator(self.trans)
-        self.retranslateUi(self)
-
+        
         self.connStatusLabel = QLabel()
         self.sendByteCountLabel = QLabel("S:0")
         self.receiveByteCountLabel = QLabel("R:0")
@@ -336,13 +335,15 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if value == False:
             return
         curObjectName = self.sender().objectName()
-        
-        if curObjectName == self.CnLanguageAction.objectName():
-                config.configini.setValue("language", self.CnLanguageAction.text())
-                self.trans.load(":Resources/translations/zh_CN.qm")
-        elif curObjectName == self.EnLanguageAction.objectName():
-                config.configini.setValue("language", self.EnLanguageAction.text())
-                self.trans.load(":Resources/translations/en.qm")
+        if curObjectName == self.SimplifiedChineseLanguageAction.objectName():
+                config.configini.setValue("language", "简体中文")
+                self.trans.load(":Resources/translations/简体中文.qm")
+        elif curObjectName == self.TraditionalChineseLanguageAction.objectName():
+                config.configini.setValue("language", "繁體中文")
+                self.trans.load(":Resources/translations/繁體中文.qm")
+        elif curObjectName == self.EnglishLanguageAction.objectName():
+                config.configini.setValue("language", "English")
+                self.trans.load(":Resources/translations/English.qm")
 
         for action in self.MenuLanguage.actions():
             if action.objectName() == curObjectName:
@@ -352,12 +353,32 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
                 action.setChecked(False)
                 action.setEnabled(True)
 
-        _app = QApplication.instance()
-        _app.installTranslator(self.trans)
+        self.app.installTranslator(self.trans)
         self.retranslateUi(self)
 
+    def serialFontSetCb(self):
+        font,ok = QFontDialog.getFont()
+        if ok:
+            self.app.setFont(font)
+            config.configini.setValue("font", font.toString())
+
+
 if __name__ == '__main__':
+
     app = QApplication(sys.argv)
+
+    # Initialize or load configuration
+    config.init()
+    # load language settings
+    _trans = QTranslator()
+    _trans.load(":Resources/translations/" + config.config_param["language"] +".qm")
+    # load font settings
+    font = QFont()
+    font.fromString(config.config_param["font"])
+
+    app.installTranslator(_trans)
+    app.setFont(font)
+
     my_pyqt_form = MyPyQT_Form()
     my_pyqt_form.show()
     sys.exit(app.exec())

@@ -2,9 +2,10 @@
 <RCC>
     <qresource prefix="/Resources">
         <file>icon/main.ico</file>
-        <file>translations/zh_CN.qm</file>
-        <file>translations/en.qm</file>
         <file>img/connect.png</file>
         <file>img/unconnect.png</file>
+        <file>translations/English.qm</file>
+        <file>translations/简体中文.qm</file>
+        <file>translations/繁體中文.qm</file>
     </qresource>
 </RCC>

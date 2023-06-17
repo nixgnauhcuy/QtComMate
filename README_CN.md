@@ -36,6 +36,7 @@ python main.py
 ![](/docs/images/qtcommate-win-cn.png)
 ![](/docs/images/qtcommate-win-en.png)
 
+
 ## :mailbox_with_mail: 反馈与贡献
 
 如果您发现任何 bug，或者有任何建议或想法，请随时提交 issue 或者 pull request。欢迎并感谢您的贡献！

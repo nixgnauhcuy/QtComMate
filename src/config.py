@@ -1,4 +1,5 @@
 import os
+from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QSettings
 
 USER_CONFIG_INI = 'user.ini'
@@ -6,7 +7,7 @@ USER_CONFIG_INI = 'user.ini'
 configini = QSettings(USER_CONFIG_INI, QSettings.Format.IniFormat)
 
 config_param = {
-    "language": 'zh-CN',
+    "language": 'English',
     "baudrateIndex": '12',
     "stopBitIndex": '0',
     "dataBitIndex": '3',
@@ -19,6 +20,8 @@ config_param = {
     "xonxoff": '0',
     "rtscts": '0',
     "dsrdtr": '0',
+
+    "font": '',
 }
 
 
@@ -31,6 +34,9 @@ def configCreate():
     for key, value in config_param.items():
         configini.setValue(key, value)
 
+    config_param["font"] = QApplication.instance().font().toString()
+    configini.setValue("font", QApplication.instance().font().toString())
+    configini.sync()
 
 def init():
     if os.path.exists(f'{USER_CONFIG_INI}'):
