@@ -5,9 +5,10 @@ import resources_rc
 import config
 import serialport
 import binascii
+import datetime
 
 from Ui_main import Ui_MainWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog, QInputDialog, QLineEdit
 from PyQt6.QtGui import QIcon, QPixmap, QFont
 from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer, QFile, QIODeviceBase, QTextStream
 from PyQt6 import QtGui
@@ -73,7 +74,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.EnglishLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
         self.SimplifiedChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
         self.TraditionalChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
+        # Font
         self.FontSetAction.triggered.connect(self.serialFontSetCb)
+        # Theme
         self.LightThemeAction.triggered.connect(self.serialThemeSwitchCb)
         self.DarkThemeAction.triggered.connect(self.serialThemeSwitchCb)
         
@@ -212,7 +215,12 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.receiveCountSum +=  len(data)
         self.receiveByteCountLabel.setText("R:" + str(self.receiveCountSum))
         self.SerialReceiveTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
-        self.SerialReceiveTextEdit.insertPlainText(data)
+
+        timestamp = ""
+        if self.SerialReceiveTimestampCheckBox.isChecked():
+            timestamp = '\n' + datetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S.%f')[:-3] + ']\n'
+
+        self.SerialReceiveTextEdit.insertPlainText(timestamp+data)
 
     def serialReceiveClearPushButtonCb(self):
         self.receiveCountSum = 0
@@ -284,6 +292,16 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
     def serialComConfigCb(self, value):
         curObjectName = self.sender().objectName()
         if curObjectName == self.SerialBaudrateComboBox.objectName():
+            if value == 0:
+                data, ok = QInputDialog.getText(self, "Baudrate Customize:", "Baudrate", QLineEdit.EchoMode.Normal, "")
+                if ok and data != "":
+                    value = data
+                    self.SerialBaudrateComboBox.setItemText(0, data)
+                else:
+                    self.SerialBaudrateComboBox.setCurrentIndex(12)
+            else:
+                self.SerialBaudrateComboBox.setItemText(0, "custom")
+
             config.configini.setValue("baudrateIndex", value)
         elif curObjectName == self.SerialStopBitComboBox.objectName():
             config.configini.setValue("stopBitIndex", value)
@@ -366,19 +384,16 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if ok:
             self.app.setFont(font)
             config.configini.setValue("font", font.toString())
-            qss_file = QFile(":sty/sty/" + config.config_param["theme"] + ".qss") 
-            print(":sty/sty/" + config.config_param["theme"] + ".qss")
+            qss_file = QFile(":sty/sty/" + config.config_param["theme"] + ".qss")
             if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
                 stream = QTextStream(qss_file) 
                 app.setStyleSheet(stream.readAll()) 
-
 
 
     def serialThemeSwitchCb(self, value):
         if value == False:
             return
         curObjectName = self.sender().objectName()
-        theme = 'light'
         if curObjectName == self.LightThemeAction.objectName():
             config.configini.setValue("theme", "light")
             theme = 'light'
