@@ -9,7 +9,7 @@ import binascii
 from Ui_main import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog
 from PyQt6.QtGui import QIcon, QPixmap, QFont
-from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer
+from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer, QFile, QIODeviceBase, QTextStream
 from PyQt6 import QtGui
 
 class SerialPortReceiveDataThread(QThread):
@@ -50,8 +50,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.setWindowIcon(QIcon(":Resources/icon/main.ico"))
-
         self.app = QApplication.instance()
         self.trans = QTranslator()
 
@@ -76,6 +74,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SimplifiedChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
         self.TraditionalChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
         self.FontSetAction.triggered.connect(self.serialFontSetCb)
+        self.LightThemeAction.triggered.connect(self.serialThemeSwitchCb)
+        self.DarkThemeAction.triggered.connect(self.serialThemeSwitchCb)
+        
 
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
@@ -105,7 +106,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.sendByteCountLabel = QLabel("S:0")
         self.receiveByteCountLabel = QLabel("R:0")
         self.tmpLabel = QLabel() # tmp 
-        self.connStatusLabel.setPixmap(QPixmap(":Resources/img/unconnect.png"))
+        self.connStatusLabel.setPixmap(QPixmap(":img/img/unconnect.png"))
         self.SerialStatusBar.addPermanentWidget(self.connStatusLabel, stretch=0)
         self.SerialStatusBar.addPermanentWidget(self.tmpLabel, stretch=4) # tmp
         self.SerialStatusBar.addPermanentWidget(self.sendByteCountLabel, stretch=1)
@@ -116,6 +117,14 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         
         for action in self.MenuLanguage.actions():
             if action.text() == config.config_param["language"]:
+                action.setChecked(True)
+                action.setEnabled(False)
+            else:
+                action.setChecked(False)
+                action.setEnabled(True)
+
+        for action in self.MenuTheme.actions():
+            if action.text() == config.config_param["theme"]:
                 action.setChecked(True)
                 action.setEnabled(False)
             else:
@@ -162,13 +171,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
     def serialConnectComPushButtonCb(self):
         if self.port.serial is None and self.SerialComboBox.currentText() != "":
-            self.connStatusLabel.setPixmap(QPixmap(":Resources/img/connect.png"))
+            self.connStatusLabel.setPixmap(QPixmap(":img/img/connect.png"))
             res = self.serialConnectPortSwitch(True)
             if res == True:
                 self.SerialConnectComPushButton.setText(self.tr("Disconnect"))
 
         elif self.port.serial is not None:
-            self.connStatusLabel.setPixmap(QPixmap(":Resources/img/unconnect.png"))
+            self.connStatusLabel.setPixmap(QPixmap(":img/img/unconnect.png"))
             res = self.serialConnectPortSwitch(False)
             if res == True:
                 self.SerialConnectComPushButton.setText(self.tr("Connect"))
@@ -332,14 +341,14 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             return
         curObjectName = self.sender().objectName()
         if curObjectName == self.SimplifiedChineseLanguageAction.objectName():
-                config.configini.setValue("language", "简体中文")
-                self.trans.load(":Resources/translations/简体中文.qm")
+            config.configini.setValue("language", "简体中文")
+            self.trans.load(":translations/translations/简体中文.qm")
         elif curObjectName == self.TraditionalChineseLanguageAction.objectName():
-                config.configini.setValue("language", "繁體中文")
-                self.trans.load(":Resources/translations/繁體中文.qm")
+            config.configini.setValue("language", "繁體中文")
+            self.trans.load(":translations/translations/繁體中文.qm")
         elif curObjectName == self.EnglishLanguageAction.objectName():
-                config.configini.setValue("language", "English")
-                self.trans.load(":Resources/translations/English.qm")
+            config.configini.setValue("language", "English")
+            self.trans.load(":translations/translations/English.qm")
 
         for action in self.MenuLanguage.actions():
             if action.objectName() == curObjectName:
@@ -357,6 +366,38 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if ok:
             self.app.setFont(font)
             config.configini.setValue("font", font.toString())
+            qss_file = QFile(":sty/sty/" + config.config_param["theme"] + ".qss") 
+            print(":sty/sty/" + config.config_param["theme"] + ".qss")
+            if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
+                stream = QTextStream(qss_file) 
+                app.setStyleSheet(stream.readAll()) 
+
+
+
+    def serialThemeSwitchCb(self, value):
+        if value == False:
+            return
+        curObjectName = self.sender().objectName()
+        theme = 'light'
+        if curObjectName == self.LightThemeAction.objectName():
+            config.configini.setValue("theme", "light")
+            theme = 'light'
+        elif curObjectName == self.DarkThemeAction.objectName():
+            config.configini.setValue("theme", "dark")
+            theme = 'dark'
+
+        for action in self.MenuTheme.actions():
+            if action.objectName() == curObjectName:
+                action.setChecked(True)
+                action.setEnabled(False)
+            else:
+                action.setChecked(False)
+                action.setEnabled(True)
+
+        qss_file = QFile(":sty/sty/" + theme + ".qss") 
+        if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
+            stream = QTextStream(qss_file) 
+            app.setStyleSheet(stream.readAll()) 
 
 
 if __name__ == '__main__':
@@ -365,6 +406,12 @@ if __name__ == '__main__':
 
     # Initialize or load configuration
     config.init()
+
+    # load theme settings
+    qss_file = QFile(":sty/sty/" + config.config_param["theme"] + ".qss") 
+    if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
+        stream = QTextStream(qss_file) 
+        app.setStyleSheet(stream.readAll())
     # load language settings
     _trans = QTranslator()
     _trans.load(":Resources/translations/" + config.config_param["language"] +".qm")

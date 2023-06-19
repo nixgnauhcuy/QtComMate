@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>QtComMate</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Resources/resources.qrc">
+    <normaloff>:/icon/icon/main.ico</normaloff>:/icon/icon/main.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0">
@@ -463,6 +467,10 @@
      <property name="title">
       <string>Language</string>
      </property>
+     <property name="icon">
+      <iconset resource="Resources/resources.qrc">
+       <normaloff>:/img/img/translate.png</normaloff>:/img/img/translate.png</iconset>
+     </property>
      <addaction name="EnglishLanguageAction"/>
      <addaction name="SimplifiedChineseLanguageAction"/>
      <addaction name="TraditionalChineseLanguageAction"/>
@@ -471,10 +479,26 @@
      <property name="title">
       <string>Font</string>
      </property>
+     <property name="icon">
+      <iconset resource="Resources/resources.qrc">
+       <normaloff>:/img/img/font.png</normaloff>:/img/img/font.png</iconset>
+     </property>
      <addaction name="FontSetAction"/>
+    </widget>
+    <widget class="QMenu" name="MenuTheme">
+     <property name="title">
+      <string>Theme</string>
+     </property>
+     <property name="icon">
+      <iconset resource="Resources/resources.qrc">
+       <normaloff>:/img/img/theme.png</normaloff>:/img/img/theme.png</iconset>
+     </property>
+     <addaction name="LightThemeAction"/>
+     <addaction name="DarkThemeAction"/>
     </widget>
     <addaction name="MenuLanguage"/>
     <addaction name="MenuFont"/>
+    <addaction name="MenuTheme"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -510,6 +534,22 @@
     <string>Font Settings</string>
    </property>
   </action>
+  <action name="LightThemeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>light</string>
+   </property>
+  </action>
+  <action name="DarkThemeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>dark</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -518,6 +558,8 @@
    <header>serialport_combobox.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="Resources/resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

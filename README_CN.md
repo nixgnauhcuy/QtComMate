@@ -16,7 +16,7 @@ QtComMate 是一个基于 pyqt6 的简单串口工具，旨在帮助开发人员
 - [x] 支持定时发送功能
 - [ ] 支持多种数据传输方式，包括 ASCII、HEX、UTF-8 等。
 - [ ] 支持数据记录和保存功能。
-- [x] 支持语言切换
+- [x] 支持语言切换/字体切换/明暗切换
 
 
 ## :rocket: 快速开始
@@ -35,7 +35,8 @@ python main.py
 ### windows
 ![](/docs/images/qtcommate-win-cn.png)
 ![](/docs/images/qtcommate-win-en.png)
-
+![](/docs/images/qtcommate-win-dark-en.png)
+![](/docs/images/qtcommate-win-dark-cn.png)
 
 ## :mailbox_with_mail: 反馈与贡献
 

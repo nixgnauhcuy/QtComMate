@@ -22,6 +22,7 @@ config_param = {
     "dsrdtr": '0',
 
     "font": '',
+    "theme": 'light'
 }
 
 
