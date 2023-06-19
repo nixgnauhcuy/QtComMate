@@ -18,7 +18,6 @@ QtComMate 是一个基于 pyqt6 的简单串口工具，旨在帮助开发人员
 - [ ] 支持数据记录和保存功能。
 - [x] 支持语言切换/字体切换/明暗切换
 
-
 ## :rocket: 快速开始
 
 ### 安装
@@ -33,10 +32,18 @@ python main.py
 ## :camera: 预览
 
 ### windows
-![](/docs/images/qtcommate-win-cn.png)
-![](/docs/images/qtcommate-win-en.png)
-![](/docs/images/qtcommate-win-dark-en.png)
-![](/docs/images/qtcommate-win-dark-cn.png)
+
+| 明亮                                   | 暗黑                                        |
+| -------------------------------------- | ------------------------------------------- |
+| ![](/docs/images/qtcommate-win-en.png) | ![](/docs/images/qtcommate-win-dark-en.png) |
+| ![](/docs/images/qtcommate-win-cn.png) | ![](/docs/images/qtcommate-win-dark-cn.png) |
+
+### linux
+
+| 明亮                                     | 暗黑                                          |
+| ---------------------------------------- | --------------------------------------------- |
+| ![](/docs/images/qtcommate-linux-en.png) | ![](/docs/images/qtcommate-linux-dark-en.png) |
+| ![](/docs/images/qtcommate-linux-cn.png) | ![](/docs/images/qtcommate-linux-dark-cn.png) |
 
 ## :mailbox_with_mail: 反馈与贡献
 

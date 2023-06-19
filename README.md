@@ -18,7 +18,6 @@ QtComMate is a simple serial port tool based on pyqt6, designed to help develope
 - [ ] Supports data recording and saving functions.
 - [x] Supports language switch / font switch / light and dark switch.
 
-
 ## :rocket: Quick Start
 
 ### Installation
@@ -33,10 +32,18 @@ python main.py
 ## :camera: Previews
 
 ### windows
-![](/docs/images/qtcommate-win-en.png)
-![](/docs/images/qtcommate-win-cn.png)
-![](/docs/images/qtcommate-win-dark-en.png)
-![](/docs/images/qtcommate-win-dark-cn.png)
+
+| light                                  | dark                                        |
+| -------------------------------------- | ------------------------------------------- |
+| ![](/docs/images/qtcommate-win-en.png) | ![](/docs/images/qtcommate-win-dark-en.png) |
+| ![](/docs/images/qtcommate-win-cn.png) | ![](/docs/images/qtcommate-win-dark-cn.png) |
+
+### linux
+
+| light                                    | dark                                          |
+| ---------------------------------------- | --------------------------------------------- |
+| ![](/docs/images/qtcommate-linux-en.png) | ![](/docs/images/qtcommate-linux-dark-en.png) |
+| ![](/docs/images/qtcommate-linux-cn.png) | ![](/docs/images/qtcommate-linux-dark-cn.png) |
 
 ## :mailbox_with_mail: Feedback and Contribution
 
