@@ -148,6 +148,11 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialHardFlowControlDSRDTRCheckBox.setChecked(int(config.config_param["dsrdtr"]))
         self.SerialHardFlowControlRTSCTSCheckBox.setChecked(int(config.config_param["rtscts"]))
 
+        if self.SerialSoftFlowControlCheckBox.isChecked():
+            self.SerialHardFlowControlGroupBox.setEnabled(False)
+        if self.SerialHardFlowControlDSRDTRCheckBox.isChecked() or self.SerialHardFlowControlRTSCTSCheckBox.isChecked():
+            self.SerialSoftFlowControlGroupBox.setEnabled(False)
+
     def serialConnectPortSwitch(self, en):
         res = False
         if en:
@@ -187,6 +192,16 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
 
     def serialSendPortWirte(self, data):
+        newLine = b''
+        if self.SerialSendLineFeedComboBox.currentIndex() == 1:
+            newLine = b'\r\n'
+        elif self.SerialSendLineFeedComboBox.currentIndex() == 2:
+            newLine = b'\r'
+        elif self.SerialSendLineFeedComboBox.currentIndex() == 3:
+            newLine = b'\n'
+            
+        data += newLine
+
         self.sendCountSum += len(data)
         self.sendByteCountLabel.setText("S:" + str(self.sendCountSum))
         self.port.write(data)
@@ -295,7 +310,6 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             if value == 0:
                 data, ok = QInputDialog.getText(self, "Baudrate Customize:", "Baudrate", QLineEdit.EchoMode.Normal, "")
                 if ok and data != "":
-                    value = data
                     self.SerialBaudrateComboBox.setItemText(0, data)
                 else:
                     self.SerialBaudrateComboBox.setCurrentIndex(12)
@@ -314,10 +328,22 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         elif curObjectName == self.SerialSendLineFeedComboBox.objectName():
             config.configini.setValue("sendLineFeedIndex", value)
         elif curObjectName == self.SerialSoftFlowControlCheckBox.objectName():
+            if value != 0:
+                self.SerialHardFlowControlGroupBox.setEnabled(False)
+            else:
+                self.SerialHardFlowControlGroupBox.setEnabled(True)
             config.configini.setValue("xonxoff", value)
         elif curObjectName == self.SerialHardFlowControlDSRDTRCheckBox.objectName():
+            if value != 0 or self.SerialHardFlowControlRTSCTSCheckBox.isChecked():
+                self.SerialSoftFlowControlGroupBox.setEnabled(False)
+            else:
+                self.SerialSoftFlowControlGroupBox.setEnabled(True)
             config.configini.setValue("dsrdtr", value)
         elif curObjectName == self.SerialHardFlowControlRTSCTSCheckBox.objectName():
+            if value != 0 or self.SerialHardFlowControlDSRDTRCheckBox.isChecked():
+                self.SerialSoftFlowControlGroupBox.setEnabled(False)
+            else:
+                self.SerialSoftFlowControlGroupBox.setEnabled(True)
             config.configini.setValue("rtscts", value)
         
         if self.port.serial is not None:

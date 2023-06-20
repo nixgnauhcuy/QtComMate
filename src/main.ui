@@ -135,12 +135,17 @@
             </item>
             <item>
              <property name="text">
-              <string>/r/n</string>
+              <string>\r\n</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>/n</string>
+              <string>\n</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>\r</string>
              </property>
             </item>
            </widget>

@@ -69,13 +69,17 @@ class SerialPort(object):
     def open(self, port, baudrate, databit, checkbit, stopbit, xonxoff, rtscts, dsrdtr):
         if self.serial is None:
             try:
-                self.serial = serial.Serial(port, baudrate, databit, checkbit, stopbit, None, xonxoff, rtscts, None, dsrdtr)
+                self.serial = serial.Serial(port, baudrate, databit, checkbit, stopbit, None)
+                self.serial.rts = rtscts
+                self.serial.dtr = dsrdtr
+                self.serial.xonxoff = xonxoff
                 self.receiveThread = SerialPortReceiveThread(self)
                 self.sendThread = SerialPortSendThread(self)
                 self.receiveThread.start()
                 self.sendThread.start()
                 return True
             except Exception as e:
+                print(e)
                 return False
                 
 
