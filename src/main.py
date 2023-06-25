@@ -9,7 +9,7 @@ import datetime
 
 from Ui_main import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog, QInputDialog, QLineEdit
-from PyQt6.QtGui import QIcon, QPixmap, QFont
+from PyQt6.QtGui import QPixmap, QFont
 from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer, QFile, QIODeviceBase, QTextStream
 from PyQt6 import QtGui
 
@@ -83,7 +83,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
         self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
-        self.SerialSendTextEdit.document().contentsChange.connect(self.serialSendTextChangeCb)
+        self.SerialSendPlainTextEdit.document().contentsChange.connect(self.serialSendTextChangeCb)
         self.SerialSendClearPushButton.clicked.connect(self.serialSendClearPushButtonCb)
         self.SerialReceiveClearPushButton.clicked.connect(self.serialReceiveClearPushButtonCb)
 
@@ -207,10 +207,10 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.port.write(data)
 
     def serialSendComPushButtonCb(self):
-        if self.SerialSendTextEdit.toPlainText() == "":
+        if self.SerialSendPlainTextEdit.toPlainText() == "":
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
-            hex_string = self.SerialSendTextEdit.toPlainText().replace(' ', '')
+            hex_string = self.SerialSendPlainTextEdit.toPlainText().replace(' ', '')
 
             data = ''
             for x in range(0, len(hex_string), 2):
@@ -218,39 +218,39 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
     
             self.serialSendPortWirte(bytes(data,encoding='utf-8'))
         else:
-            self.serialSendPortWirte(str.encode(self.SerialSendTextEdit.toPlainText()))
+            self.serialSendPortWirte(str.encode(self.SerialSendPlainTextEdit.toPlainText()))
 
     def serialSendClearPushButtonCb(self):
         self.sendCountSum = 0
         self.sendByteCountLabel.setText("S:0")
-        self.SerialSendTextEdit.clear()
+        self.SerialSendPlainTextEdit.clear()
 
 
     def readSerialPortDataSignalCb(self, data):
         self.receiveCountSum +=  len(data)
         self.receiveByteCountLabel.setText("R:" + str(self.receiveCountSum))
-        self.SerialReceiveTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        self.SerialReceivePlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
 
         timestamp = ""
         if self.SerialReceiveTimestampCheckBox.isChecked():
             timestamp = '\n' + datetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S.%f')[:-3] + ']\n'
 
-        self.SerialReceiveTextEdit.insertPlainText(timestamp+data)
+        self.SerialReceivePlainTextEdit.insertPlainText(timestamp+data)
 
     def serialReceiveClearPushButtonCb(self):
         self.receiveCountSum = 0
         self.receiveByteCountLabel.setText("R:0")
-        if self.SerialReceiveTextEdit.toPlainText() != "":
-            self.SerialReceiveTextEdit.clear()
+        if self.SerialReceivePlainTextEdit.toPlainText() != "":
+            self.SerialReceivePlainTextEdit.clear()
 
     def serialSendTextChangeCb(self, position, charsRemoved, charsAdded):
         if not self.SerialSendHexCheckBox.isChecked():
             return
         
         if charsAdded > 0:
-            beforeText = self.SerialSendTextEdit.toPlainText()[:position]
-            text = self.SerialSendTextEdit.toPlainText()[position:position+charsAdded]
-            afterText = self.SerialSendTextEdit.toPlainText()[position+charsAdded:]
+            beforeText = self.SerialSendPlainTextEdit.toPlainText()[:position]
+            text = self.SerialSendPlainTextEdit.toPlainText()[position:position+charsAdded]
+            afterText = self.SerialSendPlainTextEdit.toPlainText()[position+charsAdded:]
             
             newText = ""
             
@@ -260,15 +260,15 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
             newText = beforeText+newText+afterText
 
-            cursor = self.SerialSendTextEdit.textCursor()
+            cursor = self.SerialSendPlainTextEdit.textCursor()
 
             old_position = cursor.position()
-            self.SerialSendTextEdit.document().blockSignals(True)
-            self.SerialSendTextEdit.setPlainText(newText)
-            self.SerialSendTextEdit.document().blockSignals(False)
+            self.SerialSendPlainTextEdit.document().blockSignals(True)
+            self.SerialSendPlainTextEdit.setPlainText(newText)
+            self.SerialSendPlainTextEdit.document().blockSignals(False)
 
             cursor.setPosition(old_position)
-            self.SerialSendTextEdit.setTextCursor(cursor)
+            self.SerialSendPlainTextEdit.setTextCursor(cursor)
 
 
     def serialSendRepeatCheckCb(self, value):
@@ -280,10 +280,10 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             self.SerialSendRepeatTimer.stop()
 
     def serialSendRepeatTimerCb(self):
-        if self.SerialSendTextEdit.toPlainText() == "":
+        if self.SerialSendPlainTextEdit.toPlainText() == "":
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
-            hex_string = self.SerialSendTextEdit.toPlainText().replace(' ', '')
+            hex_string = self.SerialSendPlainTextEdit.toPlainText().replace(' ', '')
 
             data = ''
             for x in range(0, len(hex_string), 2):
@@ -291,7 +291,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
     
             self.serialSendPortWirte(bytes(data,encoding='utf-8'))
         else:
-            self.serialSendPortWirte(str.encode(self.SerialSendTextEdit.toPlainText()))
+            self.serialSendPortWirte(str.encode(self.SerialSendPlainTextEdit.toPlainText()))
 
 
     def serialSendRepeatDurationLineEditCb(self, value):
@@ -351,32 +351,44 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             self.serialConnectPortSwitch(True)
 
     def serialReceiveHexCheckBoxCb(self, value):
+        curText = self.SerialReceivePlainTextEdit.toPlainText()
+
+        if curText == "":
+            return
+        
+        print("cur text = " + curText)
+
         if value:
-            text = self.SerialReceiveTextEdit.toPlainText()
-            hex_list = [hex(ord(x))[2:] for x in text]
+            hex_list = [hex(ord(x))[2:] for x in curText]
             send_text_to_hex = ' '.join(hex_list)
-            self.SerialReceiveTextEdit.setText(send_text_to_hex)
-            self.SerialReceiveTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+            print("hex_list = " + str(hex_list))
+            print("send_text_to_hex = " + send_text_to_hex)
+            convertText = send_text_to_hex
         else:
-            hexText = self.SerialReceiveTextEdit.toPlainText().replace(' ', '')
+            hexText = curText.replace(' ', '')
+
+            print("hexText = " + hexText)
             text = ' '.join([chr(int(hexText[i:i+2], 16)) for i in range(0, len(hexText), 2)]).replace(' ', '')
-            self.SerialReceiveTextEdit.setText(text)
-            self.SerialReceiveTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+            print("text = " + text)
+            convertText = text
+        
+        self.SerialReceivePlainTextEdit.setPlainText(convertText)
+        self.SerialReceivePlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         config.configini.setValue("receiveHexEn", value)
 
 
     def serialSendHexCheckBoxCb(self, value):
         if value:
-            text = self.SerialSendTextEdit.toPlainText()
+            text = self.SerialSendPlainTextEdit.toPlainText()
             hex_list = [hex(ord(x))[2:] for x in text]
             send_text_to_hex = ' '.join(hex_list)
-            self.SerialSendTextEdit.setText(send_text_to_hex)
-            self.SerialSendTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+            self.SerialSendPlainTextEdit.setPlainText(send_text_to_hex)
+            self.SerialSendPlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         else:
-            hexText = self.SerialSendTextEdit.toPlainText().replace(' ', '')
+            hexText = self.SerialSendPlainTextEdit.toPlainText().replace(' ', '')
             text = ' '.join([chr(int(hexText[i:i+2], 16)) for i in range(0, len(hexText), 2)]).replace(' ', '')
-            self.SerialSendTextEdit.setText(text)
-            self.SerialSendTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+            self.SerialSendPlainTextEdit.setPlainText(text)
+            self.SerialSendPlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
         config.configini.setValue("sendHexEn", value)
     
 
@@ -455,7 +467,7 @@ if __name__ == '__main__':
         app.setStyleSheet(stream.readAll())
     # load language settings
     _trans = QTranslator()
-    _trans.load(":Resources/translations/" + config.config_param["language"] +".qm")
+    _trans.load(":translations/translations/" + config.config_param["language"] +".qm")
     # load font settings
     font = QFont()
     font.fromString(config.config_param["font"])

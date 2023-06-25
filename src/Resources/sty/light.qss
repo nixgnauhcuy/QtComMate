@@ -83,6 +83,29 @@ QTextEdit:read-only {
 }
 
 /* =============================================== */
+/* QPlainTextEdit                                  */
+/* =============================================== */
+QPlainTextEdit {
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+}
+
+QPlainTextEdit:hover {
+  background-color: #ffffff;
+  border-color: #00aaff;
+}
+
+QPlainTextEdit:focus {
+  border-color: #00aaff;
+}
+
+QPlainTextEdit:read-only {
+  background: #ffffff;
+  border-color: #dcdcdc;
+}
+
+/* =============================================== */
 /* QPushButton                                     */
 /* =============================================== */
 QPushButton {
