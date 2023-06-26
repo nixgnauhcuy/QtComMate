@@ -22,6 +22,8 @@ QtComMate is a simple serial port tool based on pyqt6, designed to help develope
 
 ### Installation
 
+You can download built binaries in [releases](https://github.com/nixgnauhcuy/QtComMate/releases) page, or build yourself.
+
 ```
 git clone https://github.com/nixgnauhcuy/QtComMate
 cd QtComMate/src

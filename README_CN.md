@@ -22,6 +22,8 @@ QtComMate 是一个基于 pyqt6 的简单串口工具，旨在帮助开发人员
 
 ### 安装
 
+你可以在 [releases](https://github.com/nixgnauhcuy/QtComMate/releases) 页面下载构建的二进制文件，或者自行编译并构建。
+
 ```
 git clone https://github.com/nixgnauhcuy/QtComMate
 cd QtComMate/src
