@@ -438,11 +438,11 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             return
         curObjectName = self.sender().objectName()
         if curObjectName == self.LightThemeAction.objectName():
-            config.configini.setValue("theme", "light")
             theme = 'light'
-        elif curObjectName == self.DarkThemeAction.objectName():
-            config.configini.setValue("theme", "dark")
+        else:
             theme = 'dark'
+
+        config.configini.setValue("theme", theme)
 
         for action in self.MenuTheme.actions():
             if action.objectName() == curObjectName:
