@@ -382,6 +382,8 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             newLine = '0d'
         elif self.SerialSendLineFeedComboBox.currentIndex() == 3:
             newLine = '0a'
+        else:
+            newLine = ''
             
         if value:
             text = self.SerialSendPlainTextEdit.toPlainText()
