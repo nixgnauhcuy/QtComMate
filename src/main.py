@@ -8,10 +8,10 @@ import binascii
 import datetime
 
 from Ui_main import Ui_MainWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog, QInputDialog, QLineEdit
-from PyQt6.QtGui import QPixmap, QFont
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog, QInputDialog, QLineEdit, QFileDialog
+from PyQt6.QtGui import QPixmap, QFont, QTextCursor, QIntValidator
 from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer, QFile, QIODeviceBase, QTextStream, QByteArray
-from PyQt6 import QtGui
+
 
 class SerialPortReceiveDataThread(QThread):
     dataReceivedSignal = pyqtSignal(str)
@@ -82,27 +82,32 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.LightThemeAction.triggered.connect(self.serialThemeSwitchCb)
         self.DarkThemeAction.triggered.connect(self.serialThemeSwitchCb)
         
-
+        # Receive Area
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
-        self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
-        self.SerialSendPlainTextEdit.document().contentsChange.connect(self.serialSendTextChangeCb)
-        self.SerialSendClearPushButton.clicked.connect(self.serialSendClearPushButtonCb)
         self.SerialReceiveClearPushButton.clicked.connect(self.serialReceiveClearPushButtonCb)
-
-        self.SerialSendRepeatCheckBox.stateChanged.connect(self.serialSendRepeatCheckCb)
-        self.SerialSendRepeatDurationLineEdit.textChanged.connect(self.serialSendRepeatDurationLineEditCb)
         self.SerialReceiveHexCheckBox.stateChanged.connect(self.serialReceiveHexCheckBoxCb)
-        self.SerialSendHexCheckBox.stateChanged.connect(self.serialSendHexCheckBoxCb)
-
         self.SerialBaudrateComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialStopBitComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialDataBitcomboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialChecksumBitComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialReceiveTimestampCheckBox.stateChanged.connect(self.serialComConfigCb)
+
+        # Send Area
+        self.SerialSendPushButton.clicked.connect(self.serialSendComPushButtonCb)
+        self.SerialSendPlainTextEdit.document().contentsChange.connect(self.serialSendTextChangeCb)
+        self.SerialSendClearPushButton.clicked.connect(self.serialSendClearPushButtonCb)
+        self.SerialSendRepeatCheckBox.stateChanged.connect(self.serialSendRepeatCheckCb)
+        self.SerialSendRepeatDurationLineEdit.textChanged.connect(self.serialSendRepeatDurationLineEditCb)
+        self.SerialSendHexCheckBox.stateChanged.connect(self.serialSendHexCheckBoxCb)
         self.SerialSendLineFeedComboBox.currentIndexChanged.connect(self.serialComConfigCb)
         self.SerialSoftFlowControlCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialHardFlowControlDSRDTRCheckBox.stateChanged.connect(self.serialComConfigCb)
         self.SerialHardFlowControlRTSCTSCheckBox.stateChanged.connect(self.serialComConfigCb)
+
+        # File
+        self.SerialFileSelectPushButton.clicked.connect(self.SerialFileSelectPushButtonCb)
+        self.SerialFileSendPushButton.clicked.connect(self.SerialFileSendPushButtonCb)
+
         
 
     def serialUiInit(self):
@@ -118,7 +123,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialStatusBar.addPermanentWidget(self.receiveByteCountLabel, stretch=1)
 
 
-        self.SerialSendRepeatDurationLineEdit.setValidator(QtGui.QIntValidator(0, 100000))
+        self.SerialSendRepeatDurationLineEdit.setValidator(QIntValidator(0, 100000))
         
         for action in self.MenuLanguage.actions():
             if action.text() == config.config_param["language"]:
@@ -178,6 +183,23 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             res = self.port.close()
         return res
 
+    # File
+    # File Select File
+    def SerialFileSelectPushButtonCb(self):
+        file = QFileDialog.getOpenFileName(self, "Please select the send file", "", "files(*)")
+        if file[0] != "":
+            self.SerialFileSendLineEdit.setText(file[0])
+
+    # File Send Select File
+    def SerialFileSendPushButtonCb(self):
+        if self.SerialFileSendLineEdit.text() != "":
+            try:
+                with open(self.SerialFileSendLineEdit.text(), "rb") as file:
+                    data = file.read()
+                    self.serialSendPortWirte(data)
+            except IOError:
+                print(f"Can't open this file: {file_name}")
+
 
     def serialConnectComPushButtonCb(self):
         if self.port.serial is None and self.SerialComboBox.currentText() != "":
@@ -236,7 +258,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if self.SerialReceiveTimestampCheckBox.isChecked():
             timestamp = '\n' + datetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S.%f')[:-3] + ']\n'
 
-        self.SerialReceivePlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        self.SerialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
         self.SerialReceivePlainTextEdit.insertPlainText(timestamp+data)
 
     def serialReceiveClearPushButtonCb(self):
@@ -366,7 +388,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             convertText = self.receiveArray.data().decode('utf-8')
         
         self.SerialReceivePlainTextEdit.setPlainText(convertText)
-        self.SerialReceivePlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        self.SerialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
         
 
 
@@ -395,7 +417,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             convertText = ' '.join([chr(int(hexText[i:i+2], 16)) for i in range(0, len(hexText), 2)]).replace(' ', '')
             
         self.SerialSendPlainTextEdit.setPlainText(convertText)
-        self.SerialSendPlainTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
+        self.SerialSendPlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
         
     
 
