@@ -48,6 +48,12 @@ class SerialPortReceiveDataThread(QThread):
 
 class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
+    def closeEvent(self, event):
+        if self.port.isOpen():
+            self.receiveSerialPortThread.stop()
+            self.SerialSendRepeatCheckBox.setChecked(False)
+            self.port.close()
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)

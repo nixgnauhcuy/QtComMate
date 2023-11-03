@@ -99,6 +99,12 @@ class SerialPort(object):
             self.serial = None
             return True
         return False
+    
+    def isOpen(self):
+        if self.serial is None:
+            return False
+        else:
+            return True 
 
     def write(self, data):
         if self.serial is not None:
