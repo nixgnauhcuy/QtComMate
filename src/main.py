@@ -6,7 +6,7 @@ import config
 import serialport
 import binascii
 import datetime
-
+import time
 from Ui_main import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog, QInputDialog, QLineEdit, QFileDialog
 from PyQt6.QtGui import QPixmap, QFont, QTextCursor, QIntValidator
@@ -41,6 +41,8 @@ class SerialPortReceiveDataThread(QThread):
                         self.dataReceivedSignal.emit(data_hex_spaced)
                     else:
                         self.dataReceivedSignal.emit(data.decode('iso-8859-1'))
+                else:
+                    time.sleep(0.01)
             except Exception as e:
                 print(e)
                 continue

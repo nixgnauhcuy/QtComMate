@@ -1,7 +1,7 @@
 import serial
 import queue
 import threading
-
+import time
 
 class SerialPortReceiveThread(threading.Thread):
     def __init__(self, parent):
@@ -20,10 +20,11 @@ class SerialPortReceiveThread(threading.Thread):
             if self.stopped():
                 break
             try:
-                nums = self.parent.serial.inWaiting()
+                nums = self.parent.serial.in_waiting
                 if (nums > 0):
                     recData = self.parent.serial.read(nums)
                 else:
+                    time.sleep(0.01)
                     continue
                 if self.parent.receiveQueue.full():
                     self.parent.receiveQueue.get(False)
@@ -53,6 +54,8 @@ class SerialPortSendThread(threading.Thread):
                 if not self.parent.sendQueue.empty():
                     send_data = self.parent.sendQueue.get()
                     self.parent.serial.write(send_data)
+                else:
+                    time.sleep(0.01)
             except Exception as e:
                 print(e)
                 continue
