@@ -318,12 +318,13 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
             hex_string = self.SerialSendPlainTextEdit.toPlainText().replace(' ', '')
-
-            data = ''
-            for x in range(0, len(hex_string), 2):
-                data += chr(int(hex_string[x:x+2], 16))
+            if len(hex_string) % 2 != 0:
+                padded_parts = [part.zfill(2) for part in hex_string[-1]]
+                data = bytes.fromhex(hex_string[:-1] +"".join(padded_parts))
+            else:
+                data = bytes.fromhex(hex_string)
     
-            self.serialSendPortWirte(bytes(data,encoding='utf-8'))
+            self.serialSendPortWirte(data)
         else:
             self.serialSendPortWirte(str.encode(self.SerialSendPlainTextEdit.toPlainText()))
 
