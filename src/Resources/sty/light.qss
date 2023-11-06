@@ -174,3 +174,33 @@ QGroupBox::title {
   top: 0.1em;
   background-color: #f0f0f0;
 }
+
+/* =============================================== */
+/* QTabWidget                                      */
+/* =============================================== */
+QTabWidget::pane{ 
+  border: 1px solid #1f1f1f;
+}
+
+QTabWidget::tab-bar {
+  padding-left: 4px;
+}
+
+QTabBar::tab {
+  background-color: #f0f0f0;
+  padding: 4px;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+  border: 1px solid #1f1f1f;
+  border-bottom: none;
+  min-height:20px;
+}
+
+QTabBar::tab:hover {
+  background-color: #e0e0e0;
+  border-color: #00aaff;
+}
+
+QTabBar::tab:selected {
+  background-color: #e0e0e0;
+}
