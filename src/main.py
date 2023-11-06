@@ -239,7 +239,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.port.write(data)
 
     def serialSendComPushButtonCb(self):
-        if self.SerialSendPlainTextEdit.toPlainText() == "":
+        if self.port.serial is None or self.SerialSendPlainTextEdit.toPlainText() == "":
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
             hex_string = self.SerialSendPlainTextEdit.toPlainText().replace(' ', '')
@@ -314,7 +314,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             self.SerialSendRepeatTimer.stop()
 
     def serialSendRepeatTimerCb(self):
-        if self.SerialSendPlainTextEdit.toPlainText() == "":
+        if self.port.serial is None or self.SerialSendPlainTextEdit.toPlainText() == "":
             return
         if self.SerialSendHexCheckBox.isChecked() == True:
             hex_string = self.SerialSendPlainTextEdit.toPlainText().replace(' ', '')
