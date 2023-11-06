@@ -28,17 +28,14 @@ class SerialPortReceiveDataThread(QThread):
         return self.thread.is_set()
 
     def run(self):
-        while True:
-            if self.stopped():
-                break
+        while not self.stopped():
             try:
                 data = self.parent.port.read()
                 if data:
                     self.parent.receiveArray.append(data)
                     dataLen = len(data)
                     if self.parent.SerialReceiveHexCheckBox.isChecked():
-                        data_hex = str(binascii.b2a_hex(data))[2:-1]
-                        data_hex_spaced = ' ' + ' '.join([data_hex[i:i+2] for i in range(0, len(data_hex), 2)])
+                        data_hex_spaced = " " + " ".join([f"{b:02x}" for b in data])
                         self.dataReceivedSignal.emit(data_hex_spaced, dataLen)
                     else:
                         self.dataReceivedSignal.emit(data.decode('iso-8859-1'), dataLen)
