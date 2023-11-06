@@ -14,7 +14,7 @@ from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer, QFile, QIODev
 
 
 class SerialPortReceiveDataThread(QThread):
-    dataReceivedSignal = pyqtSignal(str)
+    dataReceivedSignal = pyqtSignal(str, int)
 
     def __init__(self, parent):
         super(SerialPortReceiveDataThread, self).__init__()
@@ -35,12 +35,13 @@ class SerialPortReceiveDataThread(QThread):
                 data = self.parent.port.read()
                 if data:
                     self.parent.receiveArray.append(data)
+                    dataLen = len(data)
                     if self.parent.SerialReceiveHexCheckBox.isChecked():
                         data_hex = str(binascii.b2a_hex(data))[2:-1]
                         data_hex_spaced = ' ' + ' '.join([data_hex[i:i+2] for i in range(0, len(data_hex), 2)])
-                        self.dataReceivedSignal.emit(data_hex_spaced)
+                        self.dataReceivedSignal.emit(data_hex_spaced, dataLen)
                     else:
-                        self.dataReceivedSignal.emit(data.decode('iso-8859-1'))
+                        self.dataReceivedSignal.emit(data.decode('iso-8859-1'), dataLen)
                 else:
                     time.sleep(0.01)
             except Exception as e:
@@ -259,8 +260,8 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialSendPlainTextEdit.clear()
 
 
-    def readSerialPortDataSignalCb(self, data):
-        self.receiveCountSum += len(data)
+    def readSerialPortDataSignalCb(self, data, dataLen):
+        self.receiveCountSum += dataLen
         self.receiveByteCountLabel.setText("R:" + str(self.receiveCountSum))
         
         timestamp = ""
