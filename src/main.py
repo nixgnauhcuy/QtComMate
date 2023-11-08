@@ -267,6 +267,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
         self.SerialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
         self.SerialReceivePlainTextEdit.insertPlainText(timestamp+data)
+        self.SerialReceivePlainTextEdit.verticalScrollBar().setValue(self.SerialReceivePlainTextEdit.verticalScrollBar().maximum())
 
     def serialReceiveClearPushButtonCb(self):
         self.receiveCountSum = 0

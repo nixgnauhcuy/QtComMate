@@ -206,3 +206,34 @@ QTabBar::tab:selected {
   background-color: #3e3e3e;
   
 }
+
+/* =============================================== */
+/* ScrollBar                                       */
+/* =============================================== */
+QScrollBar{
+  background-color: #3e3e3e;
+  padding: 1px;
+  height: 10px;
+  width: 10px;
+}
+
+QScrollBar::handle{
+  border-radius: 3px;
+  background: #FCFCFC;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+QScrollBar::handle:hover {
+  background: #00aaff;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line,
+QScrollBar::add-page, QScrollBar::sub-page {
+  width: 0px;
+  background: transparent;
+}
+
+QScrollArea{
+  border: none;
+}
