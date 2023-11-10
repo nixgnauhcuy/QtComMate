@@ -20,7 +20,7 @@
    <string>QtComMate</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Resources/resources.qrc">
+   <iconset resource="../Resources/resources.qrc">
     <normaloff>:/icon/icon/main.ico</normaloff>:/icon/icon/main.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -303,6 +303,9 @@
        </item>
        <item row="0" column="1">
         <widget class="QPlainTextEdit" name="SerialReceivePlainTextEdit">
+         <property name="undoRedoEnabled">
+          <bool>false</bool>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -510,7 +513,7 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menuSettings">
     <property name="title">
      <string>Settings</string>
     </property>
@@ -519,7 +522,7 @@
       <string>Language</string>
      </property>
      <property name="icon">
-      <iconset resource="Resources/resources.qrc">
+      <iconset resource="../Resources/resources.qrc">
        <normaloff>:/img/img/translate.png</normaloff>:/img/img/translate.png</iconset>
      </property>
      <addaction name="EnglishLanguageAction"/>
@@ -531,7 +534,7 @@
       <string>Font</string>
      </property>
      <property name="icon">
-      <iconset resource="Resources/resources.qrc">
+      <iconset resource="../Resources/resources.qrc">
        <normaloff>:/img/img/font.png</normaloff>:/img/img/font.png</iconset>
      </property>
      <addaction name="FontSetAction"/>
@@ -541,7 +544,7 @@
       <string>Theme</string>
      </property>
      <property name="icon">
-      <iconset resource="Resources/resources.qrc">
+      <iconset resource="../Resources/resources.qrc">
        <normaloff>:/img/img/theme.png</normaloff>:/img/img/theme.png</iconset>
      </property>
      <addaction name="LightThemeAction"/>
@@ -551,7 +554,14 @@
     <addaction name="MenuFont"/>
     <addaction name="MenuTheme"/>
    </widget>
-   <addaction name="menu"/>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="AboutAction"/>
+   </widget>
+   <addaction name="menuSettings"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="EnglishLanguageAction">
    <property name="checkable">
@@ -601,6 +611,15 @@
     <string>dark</string>
    </property>
   </action>
+  <action name="AboutAction">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/img/img/about.png</normaloff>:/img/img/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -610,7 +629,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="Resources/resources.qrc"/>
+  <include location="../Resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

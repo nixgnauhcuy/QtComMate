@@ -7,6 +7,7 @@
     <file>img/font.png</file>
     <file>img/setting.png</file>
     <file>img/unconnect.png</file>
+    <file>img/about.png</file>
   </qresource>
   <qresource prefix="icon">
     <file>icon/main.ico</file>
