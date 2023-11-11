@@ -72,6 +72,8 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.sendCountSum = 0
         self.receiveCountSum = 0
         self.receiveArray = QByteArray()
+        self.saveFileFlag = False
+        self.saveFile = ""
 
         self.port = serialport.SerialPort()
         self.warningMsgBox = QMessageBox()
@@ -122,6 +124,8 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         # File
         self.SerialFileSelectPushButton.clicked.connect(self.SerialFileSelectPushButtonCb)
         self.SerialFileSendPushButton.clicked.connect(self.SerialFileSendPushButtonCb)
+        self.SerialFilePathSaveSelectPushButton.clicked.connect(self.SerialFilePathSaveSelectPushButtonCb)
+        self.SerialFileSavePushButton.clicked.connect(self.SerialFileSavedPushButtonCb)
 
         
 
@@ -215,6 +219,24 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
             except IOError:
                 print(f"Can't open this file: {file_name}")
 
+    # Select File Save Path
+    def SerialFilePathSaveSelectPushButtonCb(self):
+        file = QFileDialog.getSaveFileName(self, "Please select the save file", "", "files(*)")
+        if file[0] != "":
+            self.SerialFilePathSaveLineEdit.setText(file[0])
+
+    # File Save Select Path
+    def SerialFileSavedPushButtonCb(self):
+        if self.SerialFilePathSaveLineEdit.text() != "":
+            if not self.saveFileFlag:
+                self.saveFileFlag = True
+                self.SerialFileSavePushButton.setText(self.tr("Stop"))
+                self.saveFile = open(self.SerialFilePathSaveLineEdit.text(), 'a')
+            else:
+                self.saveFileFlag = False
+                self.SerialFileSavePushButton.setText(self.tr("Start"))
+                self.saveFile.close()
+
 
     def serialConnectComPushButtonCb(self):
         if self.port.serial is None and self.SerialComboBox.currentText() != "":
@@ -273,6 +295,8 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         timestamp = ""
         if self.SerialReceiveTimestampCheckBox.isChecked():
             timestamp = '\n' + datetime.datetime.now().strftime('[%Y-%m-%d %H:%M:%S.%f')[:-3] + ']\n'
+        if self.saveFileFlag:
+            self.saveFile.write(data)
 
         self.SerialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
         self.SerialReceivePlainTextEdit.insertPlainText(timestamp+data)
