@@ -7,11 +7,13 @@ import serialport
 import binascii
 import datetime
 import time
-from Ui_main import Ui_MainWindow
+
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QLabel, QFontDialog, QInputDialog, QLineEdit, QFileDialog
 from PyQt6.QtGui import QPixmap, QFont, QTextCursor, QIntValidator
 from PyQt6.QtCore import pyqtSignal, QThread, QTranslator, QTimer, QFile, QIODeviceBase, QTextStream, QByteArray
 
+from ui.Ui_main import Ui_MainWindow
+from about import AboutForm
 
 class SerialPortReceiveDataThread(QThread):
     dataReceivedSignal = pyqtSignal(str, int)
@@ -58,6 +60,8 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
+        self.aboutForm = AboutForm()
+
         self.app = QApplication.instance()
         self.trans = QTranslator()
 
@@ -78,6 +82,7 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         self.SerialSendRepeatTimer = QTimer()
         self.SerialSendRepeatTimer.timeout.connect(self.serialSendRepeatTimerCb)
 
+        # Menu Settings
         # Language
         self.EnglishLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
         self.SimplifiedChineseLanguageAction.triggered.connect(self.serialLanguageSwitchCb)
@@ -87,6 +92,10 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         # Theme
         self.LightThemeAction.triggered.connect(self.serialThemeSwitchCb)
         self.DarkThemeAction.triggered.connect(self.serialThemeSwitchCb)
+
+        # Menu Help
+        # About
+        self.AboutAction.triggered.connect(self.serialHelpAboutCb)
         
         # Receive Area
         self.SerialConnectComPushButton.clicked.connect(self.serialConnectComPushButtonCb)
@@ -454,13 +463,14 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
 
         self.app.installTranslator(self.trans)
         self.retranslateUi(self)
+        self.aboutForm.ui.retranslateUi(self)
 
     def serialFontSetCb(self):
         font,ok = QFontDialog.getFont()
         if ok:
             self.app.setFont(font)
             config.configini.setValue("font", font.toString())
-            qss_file = QFile(":sty/sty/" + config.config_param["theme"] + ".qss")
+            qss_file = QFile(":sty/sty/" + config.configini.value("theme") + ".qss")
             if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
                 stream = QTextStream(qss_file) 
                 app.setStyleSheet(stream.readAll()) 
@@ -489,6 +499,9 @@ class MyPyQT_Form(QMainWindow, Ui_MainWindow):
         if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
             stream = QTextStream(qss_file) 
             app.setStyleSheet(stream.readAll()) 
+
+    def serialHelpAboutCb(self):
+        self.aboutForm.show()
 
 
 if __name__ == '__main__':
