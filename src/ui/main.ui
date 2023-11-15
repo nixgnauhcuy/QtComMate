@@ -20,7 +20,7 @@
    <string>QtComMate</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../Resources/resources.qrc">
+   <iconset resource="../resources/resources.qrc">
     <normaloff>:/icon/icon/main.ico</normaloff>:/icon/icon/main.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -58,7 +58,7 @@
       <string>Language</string>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/resources.qrc">
+      <iconset resource="../resources/resources.qrc">
        <normaloff>:/img/img/translate.png</normaloff>:/img/img/translate.png</iconset>
      </property>
      <addaction name="enLanguageAction"/>
@@ -70,7 +70,7 @@
       <string>Font</string>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/resources.qrc">
+      <iconset resource="../resources/resources.qrc">
        <normaloff>:/img/img/font.png</normaloff>:/img/img/font.png</iconset>
      </property>
      <addaction name="fontSettingsAction"/>
@@ -80,7 +80,7 @@
       <string>Theme</string>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/resources.qrc">
+      <iconset resource="../resources/resources.qrc">
        <normaloff>:/img/img/theme.png</normaloff>:/img/img/theme.png</iconset>
      </property>
      <addaction name="lightThemeAction"/>
@@ -146,7 +146,7 @@
   </action>
   <action name="aboutAction">
    <property name="icon">
-    <iconset resource="../Resources/resources.qrc">
+    <iconset resource="../resources/resources.qrc">
      <normaloff>:/img/img/about.png</normaloff>:/img/img/about.png</iconset>
    </property>
    <property name="text">
@@ -162,7 +162,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../Resources/resources.qrc"/>
+  <include location="../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

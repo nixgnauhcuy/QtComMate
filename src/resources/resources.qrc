@@ -1,0 +1,24 @@
+<RCC>
+  <qresource prefix="img">
+    <file>img/theme.png</file>
+    <file>img/translate.png</file>
+    <file>img/connect.png</file>
+    <file>img/expand.png</file>
+    <file>img/font.png</file>
+    <file>img/setting.png</file>
+    <file>img/unconnect.png</file>
+    <file>img/about.png</file>
+  </qresource>
+  <qresource prefix="icon">
+    <file>icon/main.ico</file>
+  </qresource>
+  <qresource prefix="translations">
+    <file>translations/en_US.qm</file>
+    <file>translations/zh_TW.qm</file>
+    <file>translations/zh_CN.qm</file>
+  </qresource>
+  <qresource prefix="sty">
+    <file>sty/dark.qss</file>
+    <file>sty/light.qss</file>
+  </qresource>
+</RCC>

@@ -1,5 +1,5 @@
 import sys
-import resources_rc
+import resources.resources_rc
 import config
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFontDialog
