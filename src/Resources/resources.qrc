@@ -13,9 +13,9 @@
     <file>icon/main.ico</file>
   </qresource>
   <qresource prefix="translations">
-    <file>translations/English.qm</file>
-    <file>translations/繁體中文.qm</file>
-    <file>translations/简体中文.qm</file>
+    <file>translations/en_US.qm</file>
+    <file>translations/zh_TW.qm</file>
+    <file>translations/zh_CN.qm</file>
   </qresource>
   <qresource prefix="sty">
     <file>sty/dark.qss</file>

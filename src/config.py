@@ -1,46 +1,45 @@
 import os
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QSettings
+class ConfigManager(object):
+    USER_CONFIG_INI = 'user.ini'
 
-USER_CONFIG_INI = 'user.ini'
+    def __init__(self) -> None:
+        self.configHandle = QSettings(self.USER_CONFIG_INI, QSettings.Format.IniFormat)
+        self.configParam = {
+                "language": 'en_US',
+                "baudrateIndex": '12',
+                "stopBitIndex": '0',
+                "dataBitIndex": '3',
+                "checkSumIndex": '0',
+                "receiveHexEn": '0',
+                "timestampEn": '0',
+                "sendHexEn": '0',
+                "sendRepeatentDuration": '1000',
+                "sendLineFeedIndex": '0',
+                "xonxoff": '0',
+                "rtscts": '0',
+                "dsrdtr": '0',
 
-configini = QSettings(USER_CONFIG_INI, QSettings.Format.IniFormat)
+                "font": '',
+                "theme": 'light'
+        }
 
-config_param = {
-    "language": 'English',
-    "baudrateIndex": '12',
-    "stopBitIndex": '0',
-    "dataBitIndex": '3',
-    "checkSumIndex": '0',
-    "receiveHexEn": '0',
-    "timestampEn": '0',
-    "sendHexEn": '0',
-    "sendRepeatentDuration": '1000',
-    "sendLineFeedIndex": '0',
-    "xonxoff": '0',
-    "rtscts": '0',
-    "dsrdtr": '0',
+    def Init(self) -> None:
+        if os.path.exists(f'{self.USER_CONFIG_INI}'):
+            self.Load()
+        else:
+            self.Create()
 
-    "font": '',
-    "theme": 'light'
-}
+    def Load(self) -> dict:
+        for key in self.configHandle.allKeys():
+            self.configParam[key] = self.configHandle.value(key)
+        return self.configParam
+    
+    def Create(self) -> None:
+        for key, value in self.configParam.items():
+            self.configHandle.setValue(key, value)
 
-
-def configLoad():
-    for key in configini.allKeys():
-        config_param[key] = configini.value(key)
-
-
-def configCreate():
-    for key, value in config_param.items():
-        configini.setValue(key, value)
-
-    config_param["font"] = QApplication.instance().font().toString()
-    configini.setValue("font", QApplication.instance().font().toString())
-    configini.sync()
-
-def init():
-    if os.path.exists(f'{USER_CONFIG_INI}'):
-        configLoad()
-    else:
-        configCreate()
+        self.configParam['font'] = QApplication.instance().font().toString()
+        self.configHandle.setValue("font", QApplication.instance().font().toString())
+        self.configHandle.sync()

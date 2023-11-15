@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>520</height>
+    <width>820</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>520</height>
+    <width>820</width>
+    <height>550</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -24,530 +24,36 @@
     <normaloff>:/icon/icon/main.ico</normaloff>:/icon/icon/main.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QGroupBox" name="SerialReceiveGroupBox">
-      <property name="title">
-       <string>Receive Area</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
-       <item row="0" column="0">
-        <layout class="QFormLayout" name="SerialReceiveFormLayout">
-         <item row="0" column="0" colspan="2">
-          <widget class="SerialPort_ComBoBox" name="SerialComboBox">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>170</width>
-             <height>21</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="SerialBaudrateLabel">
-           <property name="text">
-            <string>Baudrate</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="SerialBaudrateComboBox">
-           <item>
-            <property name="text">
-             <string>custom</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>110</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>300</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>600</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1200</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2400</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>4800</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>9600</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>19200</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>38400</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>57600</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>76800</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>115200</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>128000</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>230400</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>256000</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>460800</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>512000</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>576000</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>921600</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1000000</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1500000</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2000000</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="SerialStopBitLabel">
-           <property name="text">
-            <string>Stopbit</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="SerialStopBitComboBox">
-           <item>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1.5</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="SerialDataBitLabel">
-           <property name="text">
-            <string>Databit</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="SerialDataBitcomboBox">
-           <item>
-            <property name="text">
-             <string>5</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>6</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>7</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>8</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="SerialChecksumBitLabel">
-           <property name="text">
-            <string>Checksum</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="SerialChecksumBitComboBox">
-           <item>
-            <property name="text">
-             <string>None</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Even</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Odd</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Mark</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Space</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QCheckBox" name="SerialReceiveHexCheckBox">
-           <property name="text">
-            <string>Hex</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QCheckBox" name="SerialReceiveTimestampCheckBox">
-           <property name="text">
-            <string>Timestamp</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0" colspan="2">
-          <widget class="QPushButton" name="SerialConnectComPushButton">
-           <property name="text">
-            <string>Connect</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0" colspan="2">
-          <widget class="QPushButton" name="SerialReceiveClearPushButton">
-           <property name="text">
-            <string>Clear</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPlainTextEdit" name="SerialReceivePlainTextEdit">
-         <property name="undoRedoEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QTabWidget" name="SerialTabWidget">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="SerialTab_1">
-       <attribute name="title">
-        <string>Send Area</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0" rowspan="3" colspan="4">
-         <widget class="QPlainTextEdit" name="SerialSendPlainTextEdit"/>
-        </item>
-        <item row="0" column="4">
-         <widget class="QCheckBox" name="SerialSendHexCheckBox">
-          <property name="text">
-           <string>Hex</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4">
-         <widget class="QPushButton" name="SerialSendPushButton">
-          <property name="text">
-           <string>Send</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="4">
-         <widget class="QPushButton" name="SerialSendClearPushButton">
-          <property name="text">
-           <string>Clear</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QGroupBox" name="SerialSoftFlowControlGroupBox">
-          <property name="title">
-           <string>Software Flow Control</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QCheckBox" name="SerialSoftFlowControlCheckBox">
-             <property name="text">
-              <string>xon/xoff</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QGroupBox" name="SerialSendRepeatGroupBox">
-          <property name="title">
-           <string>Repeat</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="SerialSendRepeatCheckBox">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="SerialSendRepeatUnitLabel">
-             <property name="text">
-              <string>ms</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="SerialSendRepeatDurationLineEdit"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="3">
-         <widget class="QGroupBox" name="SerialSendLineFeedGroupBox">
-          <property name="title">
-           <string>New Line</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QComboBox" name="SerialSendLineFeedComboBox">
-             <item>
-              <property name="text">
-               <string>None</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>\r\n</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>\n</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>\r</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QGroupBox" name="SerialHardFlowControlGroupBox">
-          <property name="title">
-           <string>Hardware Flow Control</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QCheckBox" name="SerialHardFlowControlDSRDTRCheckBox">
-             <property name="text">
-              <string>dsr/dtr</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="SerialHardFlowControlRTSCTSCheckBox">
-             <property name="text">
-              <string>rts/cts</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="SerialTab_2">
-       <attribute name="title">
-        <string>File</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_5">
-        <item row="0" column="1">
-         <widget class="QGroupBox" name="SerialFileSendGroupBox">
-          <property name="title">
-           <string>File Send</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLabel" name="SerialFileSendLabel">
-             <property name="text">
-              <string>File</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="SerialFileSendLineEdit">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="SerialFileSelectPushButton">
-             <property name="text">
-              <string>Select</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="SerialFileSendPushButton">
-             <property name="text">
-              <string>Send</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QGroupBox" name="SerialFileSaveGroupBox">
-          <property name="title">
-           <string>File Save</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_6">
-           <item row="0" column="2">
-            <widget class="QPushButton" name="SerialFilePathSaveSelectPushButton">
-             <property name="text">
-              <string>Select</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="SerialFilePathSaveLineEdit">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="SerialFilePathSaveLabel">
-             <property name="text">
-              <string>Path</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QPushButton" name="SerialFileSavePushButton">
-             <property name="text">
-              <string>Start</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
+   <layout class="QGridLayout" name="mainLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="SerialStatusBar"/>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="SerialStatusBar" name="mainStatusBar"/>
+  <widget class="QMenuBar" name="mainMenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>820</width>
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuSettings">
+   <widget class="QMenu" name="settingsMenu">
     <property name="title">
      <string>Settings</string>
     </property>
-    <widget class="QMenu" name="MenuLanguage">
+    <widget class="QMenu" name="languageMenu">
      <property name="title">
       <string>Language</string>
      </property>
@@ -555,11 +61,11 @@
       <iconset resource="../Resources/resources.qrc">
        <normaloff>:/img/img/translate.png</normaloff>:/img/img/translate.png</iconset>
      </property>
-     <addaction name="EnglishLanguageAction"/>
-     <addaction name="SimplifiedChineseLanguageAction"/>
-     <addaction name="TraditionalChineseLanguageAction"/>
+     <addaction name="enLanguageAction"/>
+     <addaction name="cnLanguageAction"/>
+     <addaction name="tcLanguageAction"/>
     </widget>
-    <widget class="QMenu" name="MenuFont">
+    <widget class="QMenu" name="fontMenu">
      <property name="title">
       <string>Font</string>
      </property>
@@ -567,9 +73,9 @@
       <iconset resource="../Resources/resources.qrc">
        <normaloff>:/img/img/font.png</normaloff>:/img/img/font.png</iconset>
      </property>
-     <addaction name="FontSetAction"/>
+     <addaction name="fontSettingsAction"/>
     </widget>
-    <widget class="QMenu" name="MenuTheme">
+    <widget class="QMenu" name="themeMenu">
      <property name="title">
       <string>Theme</string>
      </property>
@@ -577,34 +83,31 @@
       <iconset resource="../Resources/resources.qrc">
        <normaloff>:/img/img/theme.png</normaloff>:/img/img/theme.png</iconset>
      </property>
-     <addaction name="LightThemeAction"/>
-     <addaction name="DarkThemeAction"/>
+     <addaction name="lightThemeAction"/>
+     <addaction name="darkThemeAction"/>
     </widget>
-    <addaction name="MenuLanguage"/>
-    <addaction name="MenuFont"/>
-    <addaction name="MenuTheme"/>
+    <addaction name="languageMenu"/>
+    <addaction name="fontMenu"/>
+    <addaction name="themeMenu"/>
    </widget>
-   <widget class="QMenu" name="menuHelp">
+   <widget class="QMenu" name="helpMenu">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="AboutAction"/>
+    <addaction name="aboutAction"/>
    </widget>
-   <addaction name="menuSettings"/>
-   <addaction name="menuHelp"/>
+   <addaction name="settingsMenu"/>
+   <addaction name="helpMenu"/>
   </widget>
-  <action name="EnglishLanguageAction">
+  <action name="enLanguageAction">
    <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
     <string>English</string>
    </property>
   </action>
-  <action name="SimplifiedChineseLanguageAction">
+  <action name="cnLanguageAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -612,7 +115,7 @@
     <string>简体中文</string>
    </property>
   </action>
-  <action name="TraditionalChineseLanguageAction">
+  <action name="tcLanguageAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -620,12 +123,12 @@
     <string>繁體中文</string>
    </property>
   </action>
-  <action name="FontSetAction">
+  <action name="fontSettingsAction">
    <property name="text">
     <string>Font Settings</string>
    </property>
   </action>
-  <action name="LightThemeAction">
+  <action name="lightThemeAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -633,7 +136,7 @@
     <string>light</string>
    </property>
   </action>
-  <action name="DarkThemeAction">
+  <action name="darkThemeAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -641,7 +144,7 @@
     <string>dark</string>
    </property>
   </action>
-  <action name="AboutAction">
+  <action name="aboutAction">
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
      <normaloff>:/img/img/about.png</normaloff>:/img/img/about.png</iconset>
@@ -653,9 +156,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SerialPort_ComBoBox</class>
-   <extends>QComboBox</extends>
-   <header>serialport_combobox.h</header>
+   <class>SerialStatusBar</class>
+   <extends>QStatusBar</extends>
+   <header>widgets.serialStatusBar.h</header>
   </customwidget>
  </customwidgets>
  <resources>
