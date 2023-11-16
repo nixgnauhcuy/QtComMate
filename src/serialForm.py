@@ -119,6 +119,8 @@ class SerialForm(QFrame, Ui_serialForm):
         return res
     
     def SerialSendDataPort(self, data):
+        if self.serialHandle.serial is None:
+            return
         newline_mappings = {
             1: b'\r\n',  # 回车换行
             2: b'\r',    # 回车
@@ -146,8 +148,7 @@ class SerialForm(QFrame, Ui_serialForm):
                 data = bytes.fromhex(hex_string)
         else:
             data = sendData.encode('gbk')
-        if self.serialHandle.serial is not None:
-            self.SerialSendDataPort(data)
+        self.SerialSendDataPort(data)
             
     
     def SerialPortReceiveDataSignalCb(self, data):
@@ -184,6 +185,9 @@ class SerialForm(QFrame, Ui_serialForm):
                     self.serialReceiveThread.start()
                     self.serialConnectComPushButton.setText(self.tr("Disconnect"))
                     ret = True
+                else:
+                    self.warningMsgBox.setText(self.tr("Could not open port, Please verify if the serial port is correct or if it is being occupied!!!"))
+                    self.warningMsgBox.exec()
             elif self.serialHandle.serial is not None:
                 self.serialConnectComPushButton.setText(self.tr("Connect"))
                 self.SerialOnOffSwitch(False)
@@ -248,8 +252,7 @@ class SerialForm(QFrame, Ui_serialForm):
                     data = bytes.fromhex(hex_string)
             else:
                 data = sendData.encode('gbk')
-            if self.serialHandle.serial is not None:
-                self.SerialSendDataPort(data)
+            self.SerialSendDataPort(data)
         elif objectName == self.serialSendClearPushButton.objectName(): # send clean
             self.sendByteCount = 0
             self.serialSendPlainTextEdit.clear()

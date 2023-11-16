@@ -66,7 +66,7 @@ class SerialPort(object):
                 self.sendThread.start()
                 return True
             except Exception as e:
-                print(e)
+                # print(e)
                 return False
                 
 
