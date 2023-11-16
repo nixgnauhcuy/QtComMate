@@ -1,9 +1,8 @@
-import enum
 import threading
 import re
-import time
-import datetime
-
+from enum import Enum
+from time import sleep
+from datetime import datetime
 from ui.Ui_serial import Ui_serialForm
 from serialPort import SerialPort
 from config import ConfigManager
@@ -32,14 +31,20 @@ class SerialReceiveDataThread(QThread):
                     self.rbuf.append(data)
                     self.dataReceivedSignal.emit(data)
                 else:
-                    time.sleep(0.01)
+                    sleep(0.01)
             except Exception as e:
                 print(e)
                 continue
 
 class SerialForm(QFrame, Ui_serialForm):
 
-    class SerialClickEvent(enum.Enum):
+    def closeEvent(self, event):
+        if self.serialHandle.isOpen():
+            self.serialReceiveThread.stop()
+            self.SerialSendRepeatTimer.stop()
+            self.serialHandle.close()
+
+    class SerialClickEvent(Enum):
         ConnectClickEvent = 0
         ReceiveClearClickEvent = 1
         ReceiveDataClickEvent = 2
@@ -156,7 +161,7 @@ class SerialForm(QFrame, Ui_serialForm):
 
         timestamp = ""
         if self.serialReceiveTimestampCheckBox.isChecked():
-            timestamp = f"\n[{datetime.datetime.now():%Y-%m-%d %H:%M:%S.%f}]".rjust(23, ' ')[:-3] + ']\n'
+            timestamp = f"\n[{datetime.now():%Y-%m-%d %H:%M:%S.%f}]".rjust(23, ' ')[:-3] + ']\n'
         if self.saveFileFlag:
             self.saveFile.write(data)
 

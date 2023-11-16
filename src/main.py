@@ -11,6 +11,9 @@ from about import AboutForm
 from serialForm import SerialForm
 
 class MainForm(QMainWindow, Ui_mainWindow):
+    def closeEvent(self, event):
+        self.serialForm.closeEvent(event)
+
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
