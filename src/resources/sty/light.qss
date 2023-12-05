@@ -193,7 +193,7 @@ QTabBar::tab {
   border-top-right-radius: 9px;
   border: 1px solid #1f1f1f;
   border-bottom: none;
-  min-height:20px;
+  min-height:15px;
 }
 
 QTabBar::tab:hover {

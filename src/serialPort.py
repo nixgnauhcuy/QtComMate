@@ -8,13 +8,13 @@ class SerialPortReceiveThread(threading.Thread):
         super(SerialPortReceiveThread, self).__init__()
         self.serial = serial
         self.readQueue = readQueue
-        self.stop_event = threading.Event()
+        self.stopEvent = threading.Event()
 
     def stop(self):
-        self.stop_event.set()
+        self.stopEvent.set()
 
     def run(self):
-        while not self.stop_event.is_set():
+        while not self.stopEvent.is_set():
             try:
                 if self.serial.in_waiting > 0:
                     recData = self.serial.read(self.serial.in_waiting)
