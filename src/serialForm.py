@@ -61,6 +61,7 @@ class SerialForm(QFrame, Ui_serialForm):
         self.config = ConfigManager()
         self.configParam = self.config.Load()
         self.hex_pattern = re.compile(r'^[0-9a-fA-F]+$')
+        self.encoding = self.configParam['encoding']
 
         self.UiInit()
 
@@ -147,7 +148,7 @@ class SerialForm(QFrame, Ui_serialForm):
             else:
                 data = bytes.fromhex(hex_string)
         else:
-            data = sendData.encode('gbk')
+            data = sendData.encode(self.encoding, errors='replace')
         self.SerialSendDataPort(data)
             
     
@@ -158,7 +159,7 @@ class SerialForm(QFrame, Ui_serialForm):
         if self.serialReceiveHexCheckBox.isChecked():
             data = " " + " ".join([f"{b:02x}" for b in data])
         else:
-            data = data.decode('gbk')  
+            data = data.decode(self.encoding, errors='replace')  
 
         timestamp = ""
         if self.serialReceiveTimestampCheckBox.isChecked():
@@ -215,11 +216,11 @@ class SerialForm(QFrame, Ui_serialForm):
         elif objectName == self.serialReceiveHexCheckBox.objectName():
             text = self.serialReceivePlainTextEdit.toPlainText()
             if value:
-                text = text.encode('gbk')
+                text = text.encode(self.encoding, errors='replace')
                 text = ' '.join([f"{byte:02x}" for byte in text])
             else:
                 bytes_object = bytes.fromhex("".join(text.split()))
-                text = bytes_object.decode('gbk')
+                text = bytes_object.decode(self.encoding, errors='replace')
             
             self.serialReceivePlainTextEdit.setPlainText(text)
             self.serialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
@@ -251,7 +252,7 @@ class SerialForm(QFrame, Ui_serialForm):
                 else:
                     data = bytes.fromhex(hex_string)
             else:
-                data = sendData.encode('gbk')
+                data = sendData.encode(self.encoding, errors='replace')
             self.SerialSendDataPort(data)
         elif objectName == self.serialSendClearPushButton.objectName(): # send clean
             self.sendByteCount = 0
@@ -328,11 +329,11 @@ class SerialForm(QFrame, Ui_serialForm):
                 return
             
             if value:
-                hex_list = [f"{byte:02x}" for byte in text.encode('gbk')]
+                hex_list = [f"{byte:02x}" for byte in text.encode(self.encoding, errors='replace')]
                 convertText = str(hex_list)
             else:
                 byte_array = bytearray.fromhex(text)
-                convertText = byte_array.decode('gbk')
+                convertText = byte_array.decode(self.encoding, errors='replace')
             
             self.serialSendPlainTextEdit.setPlainText(convertText)
             self.serialSendPlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)

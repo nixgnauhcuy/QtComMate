@@ -14,7 +14,7 @@ QtComMate is a simple serial port tool based on pyqt6, designed to help develope
 - [x] Supports data sending and receiving functions.
 - [x] Supports common serial port parameter configurations, including baud rate, data bits, stop bits, parity, etc.
 - [x] Supports timer sending function.
-- [ ] Supports multiple data transmission modes, including ASCII, HEX, UTF-8, etc.
+- [x] Supports multiple data transmission modes, including UTF-8、UTF-32、GBK, etc.
 - [x] Supports data recording and saving functions.
 - [x] Supports language switch / font switch / light and dark switch.
 

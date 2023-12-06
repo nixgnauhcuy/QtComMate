@@ -8,6 +8,7 @@ class ConfigManager(object):
         self.configHandle = QSettings(self.USER_CONFIG_INI, QSettings.Format.IniFormat)
         self.configParam = {
                 "language": 'en_US',
+                "encoding": 'GB2312',
                 "baudrateIndex": '12',
                 "stopBitIndex": '0',
                 "dataBitIndex": '3',

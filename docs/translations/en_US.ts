@@ -4,140 +4,47 @@
 <context>
     <name>SerialClickEvent</name>
     <message>
-        <location filename="src/serialForm.py" line="180"/>
+        <location filename="src/serialForm.py" line="187"/>
         <source>Disconnect</source>
         <translation>Disconnect</translation>
     </message>
     <message>
-        <location filename="src/serialForm.py" line="183"/>
+        <location filename="src/serialForm.py" line="190"/>
+        <source>Could not open port, Please verify if the serial port is correct or if it is being occupied!!!</source>
+        <translation>Could not open port, Please verify if the serial port is correct or if it is being occupied!!!</translation>
+    </message>
+    <message>
+        <location filename="src/serialForm.py" line="193"/>
         <source>Connect</source>
         <translation>Connect</translation>
     </message>
     <message>
-        <location filename="src/serialForm.py" line="197"/>
+        <location filename="src/serialForm.py" line="207"/>
         <source>Baudrate Customize:</source>
         <translation>Baudrate Customize:</translation>
     </message>
     <message>
-        <location filename="src/serialForm.py" line="197"/>
+        <location filename="src/serialForm.py" line="207"/>
         <source>Baudrate</source>
         <translation>Baudrate</translation>
     </message>
     <message>
-        <location filename="src/serialForm.py" line="280"/>
+        <location filename="src/serialForm.py" line="289"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="src/serialForm.py" line="280"/>
+        <location filename="src/serialForm.py" line="289"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
 </context>
 <context>
-    <name>aboutForm</name>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="66"/>
-        <source>About</source>
-        <translation>About</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="67"/>
-        <source>QtComMate</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="68"/>
-        <source>Version: 1.1.0</source>
-        <translation>Version: 1.1.0</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="69"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Issue:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/issues&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/issues&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Issue:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/issues&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/issues&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="70"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Latest Version:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/releases&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/releases&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Latest Version:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/releases&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/releases&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="71"/>
-        <source>Simple Serial Port Tool Based on pyqt6</source>
-        <translation>Simple Serial Port Tool Based on pyqt6</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_about.py" line="72"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;License:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;License:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
     <name>mainWindow</name>
     <message>
-        <location filename="src/ui/Ui_main.py" line="84"/>
+        <location filename="src/ui/Ui_main.py" line="27"/>
         <source>QtComMate</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="85"/>
-        <source>Settings</source>
-        <translation>Settings</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="86"/>
-        <source>Language</source>
-        <translation>Language</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="87"/>
-        <source>Font</source>
-        <translation>Font</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="88"/>
-        <source>Theme</source>
-        <translation>Theme</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="89"/>
-        <source>Help</source>
-        <translation>Help</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="90"/>
-        <source>English</source>
-        <translation>English</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="91"/>
-        <source>简体中文</source>
-        <translation>简体中文</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="92"/>
-        <source>繁體中文</source>
-        <translation>繁體中文</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="93"/>
-        <source>Font Settings</source>
-        <translation>Font Settings</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="94"/>
-        <source>light</source>
-        <translation>light</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="95"/>
-        <source>dark</source>
-        <translation>dark</translation>
-    </message>
-    <message>
-        <location filename="src/ui/Ui_main.py" line="96"/>
-        <source>About</source>
-        <translation>About</translation>
+        <translation>QtComMate</translation>
     </message>
 </context>
 <context>
@@ -461,6 +368,129 @@
         <location filename="src/ui/Ui_serial.py" line="287"/>
         <source>Start</source>
         <translation>Start</translation>
+    </message>
+</context>
+<context>
+    <name>settingForm</name>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="110"/>
+        <source>Settings</source>
+        <translation>Settings</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="111"/>
+        <source>Language:</source>
+        <translation>Language:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="112"/>
+        <source>English</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="113"/>
+        <source>简体中文</source>
+        <translation>简体中文</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="114"/>
+        <source>繁體中文</source>
+        <translation>繁體中文</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="115"/>
+        <source>Theme:</source>
+        <translation>Theme:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="116"/>
+        <source>Light</source>
+        <translation>Light</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="117"/>
+        <source>Dark</source>
+        <translation>Dark</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="118"/>
+        <source>Font:</source>
+        <translation>Font:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="119"/>
+        <source>Font</source>
+        <translation>Font</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="120"/>
+        <source>Encoding:</source>
+        <translation>Encoding:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="121"/>
+        <source>UTF-8</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="122"/>
+        <source>UTF-32</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="123"/>
+        <source>GBK</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="124"/>
+        <source>GB2312</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="125"/>
+        <source>ISO-8859-1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="126"/>
+        <source>BIG5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="127"/>
+        <source>General</source>
+        <translation>General</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="128"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Issue:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/issues&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/issues&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Issue:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/issues&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/issues&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="129"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Latest Version:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/releases&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/releases&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Latest Version:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/releases&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/releases&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="130"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;License:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;License:&amp;ensp;&lt;a href=&quot;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;https://github.com/nixgnauhcuy/QtComMate/blob/main/LICENSE&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="131"/>
+        <source>Version: 1.1.0</source>
+        <translation>Version: 1.1.0</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="132"/>
+        <source>Simple Serial Port Tool Based on pyqt6</source>
+        <translation>Simple Serial Port Tool Based on pyqt6</translation>
+    </message>
+    <message>
+        <location filename="src/ui/Ui_setting.py" line="133"/>
+        <source>About</source>
+        <translation>About</translation>
     </message>
 </context>
 </TS>

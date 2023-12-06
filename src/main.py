@@ -67,7 +67,9 @@ class MainForm(QMainWindow, Ui_mainWindow):
             qss_file = QFile(":sty/sty/" + self.config.configHandle.value("theme") + ".qss")
             if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
                 stream = QTextStream(qss_file) 
-                self.appInstance.setStyleSheet(stream.readAll()) 
+                self.appInstance.setStyleSheet(stream.readAll())
+        elif type == self.settingForm.SerialSettingEvent.SettingEncodingChangeEvent:
+            self.serialForm.encoding = value
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

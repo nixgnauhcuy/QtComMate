@@ -11,6 +11,7 @@ class SettingForm(QFrame, Ui_settingForm):
         SettingLanguageChangeEvent = 0
         SettingThemeChangeEvent = 1
         SettingFontChangeEvent = 2
+        SettingEncodingChangeEvent = 3
 
     serialSettingEventSignal = pyqtSignal(SerialSettingEvent, object)
 
@@ -25,6 +26,7 @@ class SettingForm(QFrame, Ui_settingForm):
 
         self.LanguageComboBox.currentIndexChanged.connect(self.SettingLanguageChangeCb)
         self.ThemeComboBox.currentIndexChanged.connect(self.SettingThemeChangeCb)
+        self.EncodingComboBox.currentIndexChanged.connect(self.SettingEncodingChangeCb)
         self.FontPushButton.clicked.connect(self.SettingFontChangeCb)
 
 
@@ -38,10 +40,20 @@ class SettingForm(QFrame, Ui_settingForm):
             "light": 0,
             "dark": 1,
         }
+        encodings_dict = {
+            "UTF-8": 0,
+            "UTF-32": 1,
+            "GBK": 2,
+            "GB2312": 3,
+            "ISO-8859-1": 4,
+            "BIG5": 5,
+        }
         language = language_dict.get(self.configParam["language"], None)
         self.LanguageComboBox.setCurrentIndex(language)
         theme = theme_dict.get(self.configParam["theme"], None)
         self.ThemeComboBox.setCurrentIndex(theme)
+        encoding = encodings_dict.get(self.configParam["encoding"], None)
+        self.EncodingComboBox.setCurrentIndex(encoding)
         self.FontPushButton.setText(self.configParam["font"].split(",")[0])
 
     def SettingLanguageChangeCb(self, value) -> None:
@@ -58,6 +70,18 @@ class SettingForm(QFrame, Ui_settingForm):
         theme = 'light' if value == 0 else 'dark'
         self.config.configHandle.setValue("theme", theme)
         self.serialSettingEventSignal.emit(self.SerialSettingEvent.SettingThemeChangeEvent, theme)
+
+    def SettingEncodingChangeCb(self, value) -> None:
+        encodings = [
+            "UTF-8",
+            "UTF-32",
+            "GBK",
+            "GB2312",
+            "ISO-8859-1",
+            "BIG5"
+        ]
+        self.config.configHandle.setValue("encoding", encodings[value])
+        self.serialSettingEventSignal.emit(self.SerialSettingEvent.SettingEncodingChangeEvent, encodings[value])
 
     def SettingFontChangeCb(self) -> None:
         font,ok = QFontDialog.getFont()
