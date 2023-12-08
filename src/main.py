@@ -54,8 +54,8 @@ class MainForm(QMainWindow, Ui_mainWindow):
         if type == self.settingForm.SerialSettingEvent.SettingLanguageChangeEvent:
             self.translator.load(":translations/translations/"+ value + ".qm")
             self.appInstance.installTranslator(self.translator)
-            self.settingForm.retranslateUi(self)
-            self.serialForm.retranslateUi(self)
+            self.settingForm.retranslateUi(self.settingForm)
+            self.serialForm.retranslateUi(self.serialForm)
             self.retranslateUi(self)
         elif type == self.settingForm.SerialSettingEvent.SettingThemeChangeEvent:
             qss_file = QFile(":sty/sty/" + value + ".qss") 
