@@ -2,6 +2,7 @@ import threading
 import re
 from enum import Enum
 from time import sleep
+from time import time
 from datetime import datetime
 from ui.Ui_serial import Ui_serialForm
 from serialPort import SerialPort
@@ -66,6 +67,7 @@ class SerialForm(QFrame, Ui_serialForm):
         self.UiInit()
 
         # receive
+        self.last_recv_time = 0
         self.receiveByteCount = 0
         self.receiveByteArray = QByteArray()
 
@@ -105,6 +107,7 @@ class SerialForm(QFrame, Ui_serialForm):
 
     def SerialOnOffSwitch(self, en) -> bool:
         res = False
+        self.last_recv_time = 0
         if en:
             port = self.serialComboBox.currentText().split()[0]
             baudrate = int(self.serialBaudrateComboBox.currentText())
@@ -162,8 +165,9 @@ class SerialForm(QFrame, Ui_serialForm):
             data = data.decode(self.encoding, errors='replace')  
 
         timestamp = ""
-        if self.serialReceiveTimestampCheckBox.isChecked():
+        if self.serialReceiveTimestampCheckBox.isChecked() and time() - self.last_recv_time > 0.1:
             timestamp = f"\n[{datetime.now():%Y-%m-%d %H:%M:%S.%f}]".rjust(23, ' ')[:-3] + ']\n'
+            self.last_recv_time = time()
         if self.saveFileFlag:
             self.saveFile.write(data)
 
