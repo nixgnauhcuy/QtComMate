@@ -1,47 +1,34 @@
-import threading
 import re
+import logging
 from enum import Enum
-from time import sleep
 from time import time
 from datetime import datetime
+
 from ui.Ui_serial import Ui_serialForm
 from serialPort import SerialPort
 from config import ConfigManager
+from serial_utils import (
+    parse_send_payload,
+    format_bytes_as_hex,
+    text_to_hex_display,
+    hex_display_to_text,
+)
 
 from PyQt6.QtWidgets import QFrame, QInputDialog, QLineEdit, QMessageBox, QFileDialog
 from PyQt6.QtGui import QTextCursor, QIntValidator
-from PyQt6.QtCore import pyqtSignal, QThread, QByteArray, QTimer
+from PyQt6.QtCore import pyqtSignal, QTimer
 
-class SerialReceiveDataThread(QThread):
-    dataReceivedSignal = pyqtSignal(bytes)
+logger = logging.getLogger(__name__)
 
-    def __init__(self, serial=None, rbuf=None):
-        super(SerialReceiveDataThread, self).__init__()
-        self.serial = serial
-        self.rbuf = rbuf
-        self.stop_event = threading.Event()
+RECEIVE_POLL_INTERVAL_MS = 30
+RECEIVE_DISPLAY_MAX_CHARS = 500_000
 
-    def stop(self):
-        self.stop_event.set()
-
-    def run(self):
-        while not self.stop_event.is_set():
-            try:
-                data = self.serial.read()
-                if data:
-                    self.rbuf.append(data)
-                    self.dataReceivedSignal.emit(data)
-                else:
-                    sleep(0.01)
-            except Exception as e:
-                print(e)
-                continue
 
 class SerialForm(QFrame, Ui_serialForm):
 
     def closeEvent(self, event):
         if self.serialHandle.isOpen():
-            self.serialReceiveThread.stop()
+            self.receivePollTimer.stop()
             self.SerialSendRepeatTimer.stop()
             self.serialHandle.close()
 
@@ -69,7 +56,9 @@ class SerialForm(QFrame, Ui_serialForm):
         # receive
         self.last_recv_time = 0
         self.receiveByteCount = 0
-        self.receiveByteArray = QByteArray()
+
+        self.receivePollTimer = QTimer(self)
+        self.receivePollTimer.timeout.connect(self._poll_serial_receive)
 
         self.serialConnectComPushButton.clicked.connect(self.SerialReceiveEventCb)
         self.serialReceiveClearPushButton.clicked.connect(self.SerialReceiveEventCb)
@@ -105,30 +94,40 @@ class SerialForm(QFrame, Ui_serialForm):
         self.serialFilePathSaveSelectPushButton.clicked.connect(self.SerialSendEventCb)
         self.serialFileSavePushButton.clicked.connect(self.SerialSendEventCb)
 
+    def _current_serial_params(self):
+        return (
+            int(self.serialBaudrateComboBox.currentText()),
+            int(self.serialDataBitcomboBox.currentText()),
+            self.serialChecksumBitComboBox.currentText()[0],
+            float(self.serialStopBitComboBox.currentText()),
+            int(self.serialSoftFlowControlCheckBox.isChecked()),
+            int(self.serialHardFlowControlRTSCTSCheckBox.isChecked()),
+            int(self.serialHardFlowControlDSRDTRCheckBox.isChecked()),
+        )
+
     def SerialOnOffSwitch(self, en) -> bool:
-        res = False
         self.last_recv_time = 0
         if en:
             port = self.serialComboBox.currentText().split()[0]
-            baudrate = int(self.serialBaudrateComboBox.currentText())
-            stopBit = float(self.serialStopBitComboBox.currentText())
-            dataBit = int(self.serialDataBitcomboBox.currentText())
-            checkSum = self.serialChecksumBitComboBox.currentText()
-            xonxoff = int(self.serialSoftFlowControlCheckBox.isChecked())
-            rtscts = int(self.serialHardFlowControlRTSCTSCheckBox.isChecked())
-            dsrdtr = int(self.serialHardFlowControlDSRDTRCheckBox.isChecked())
-            res = self.serialHandle.open(port, baudrate, dataBit, checkSum[0], stopBit, xonxoff, rtscts, dsrdtr)
-        else:
-            res = self.serialHandle.close()
-        return res
-    
+            baudrate, dataBit, checkSum, stopBit, xonxoff, rtscts, dsrdtr = self._current_serial_params()
+            return self.serialHandle.open(port, baudrate, dataBit, checkSum, stopBit, xonxoff, rtscts, dsrdtr)
+        return self.serialHandle.close()
+
+    def _apply_serial_params_if_open(self) -> None:
+        if not self.serialHandle.isOpen():
+            return
+        baudrate, dataBit, checkSum, stopBit, xonxoff, rtscts, dsrdtr = self._current_serial_params()
+        if not self.serialHandle.reconfigure(baudrate, dataBit, checkSum, stopBit, xonxoff, rtscts, dsrdtr):
+            self.SerialOnOffSwitch(False)
+            self.SerialOnOffSwitch(True)
+
     def SerialSendDataPort(self, data):
         if self.serialHandle.serial is None:
             return
         newline_mappings = {
-            1: b'\r\n',  # 鍥炶溅鎹㈣
-            2: b'\r',    # 鍥炶溅
-            3: b'\n',    # 鎹㈣
+            1: b'\r\n',  # 回车换行
+            2: b'\r',    # 回车
+            3: b'\n',    # 换行
         }
         newLine = newline_mappings.get(self.serialSendLineFeedComboBox.currentIndex(), b'')
         data += newLine
@@ -142,41 +141,52 @@ class SerialForm(QFrame, Ui_serialForm):
         sendData = self.serialSendPlainTextEdit.toPlainText()
         if not sendData:
             return
-        
-        if self.serialSendHexCheckBox.isChecked():
-            hex_string = sendData.replace(' ', '')
-            if len(hex_string) % 2 != 0:
-                padded_parts = [part.zfill(2) for part in hex_string[-1]]
-                data = bytes.fromhex(hex_string[:-1] +"".join(padded_parts))
-            else:
-                data = bytes.fromhex(hex_string)
-        else:
-            data = sendData.encode(self.encoding, errors='replace')
+        data = parse_send_payload(sendData, self.serialSendHexCheckBox.isChecked(), self.encoding)
         self.SerialSendDataPort(data)
-            
-    
-    def SerialPortReceiveDataSignalCb(self, data):
-        self.receiveByteCount += len(data)
-        self.serialClickEventSignal.emit(self.SerialClickEvent.ReceiveDataClickEvent, self.receiveByteCount)
 
+    def _poll_serial_receive(self):
+        data = self.serialHandle.read_all_pending()
+        if not data:
+            return
+
+        self.receiveByteCount += len(data)
+        self.serialClickEventSignal.emit(
+            self.SerialClickEvent.ReceiveDataClickEvent, self.receiveByteCount
+        )
+        self._append_receive_display(data)
+
+    def _format_receive_chunk(self, data: bytes) -> str:
         if self.serialReceiveHexCheckBox.isChecked():
-            data = " " + " ".join([f"{b:02x}" for b in data])
-        else:
-            data = data.decode(self.encoding, errors='replace')  
+            return format_bytes_as_hex(data)
+        return data.decode(self.encoding, errors='replace')
+
+    def _append_receive_display(self, data: bytes):
+        display_text = self._format_receive_chunk(data)
 
         timestamp = ""
         if self.serialReceiveTimestampCheckBox.isChecked() and time() - self.last_recv_time > 0.1:
             timestamp = f"\n[{datetime.now():%Y-%m-%d %H:%M:%S.%f}]".rjust(23, ' ')[:-3] + ']\n'
             self.last_recv_time = time()
+
         if self.saveFileFlag:
-            self.saveFile.write(data)
+            self.saveFile.write(f"{timestamp}{display_text}")
 
         self.serialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
-        self.serialReceivePlainTextEdit.insertPlainText(f"{timestamp}{data}")
+        self.serialReceivePlainTextEdit.insertPlainText(f"{timestamp}{display_text}")
         self.serialReceivePlainTextEdit.verticalScrollBar().setValue(
             self.serialReceivePlainTextEdit.verticalScrollBar().maximum()
         )
+        self._trim_receive_view()
 
+    def _trim_receive_view(self):
+        doc = self.serialReceivePlainTextEdit.document()
+        excess = doc.characterCount() - RECEIVE_DISPLAY_MAX_CHARS
+        if excess <= 0:
+            return
+        cursor = QTextCursor(doc)
+        cursor.setPosition(0)
+        cursor.setPosition(excess, QTextCursor.MoveMode.KeepAnchor)
+        cursor.removeSelectedText()
 
     def SerialReceiveEventCb(self):
         objectName = self.sender().objectName()
@@ -185,47 +195,45 @@ class SerialForm(QFrame, Ui_serialForm):
             if self.serialHandle.serial is None and self.serialComboBox.currentText():
                 res = self.SerialOnOffSwitch(True)
                 if res:
-                    self.serialReceiveThread = SerialReceiveDataThread(self.serialHandle, self.receiveByteArray)
-                    self.serialReceiveThread.dataReceivedSignal.connect(self.SerialPortReceiveDataSignalCb)
-                    self.serialReceiveThread.start()
+                    self.receivePollTimer.start(RECEIVE_POLL_INTERVAL_MS)
                     self.serialConnectComPushButton.setText(self.tr("Disconnect"))
                     ret = True
                 else:
-                    self.warningMsgBox.setText(self.tr("Could not open port, Please verify if the serial port is correct or if it is being occupied!!!"))
+                    self.warningMsgBox.setText(
+                        self.tr("Could not open port, Please verify if the serial port is correct or if it is being occupied!!!")
+                    )
                     self.warningMsgBox.exec()
             elif self.serialHandle.serial is not None:
+                self.receivePollTimer.stop()
                 self.serialConnectComPushButton.setText(self.tr("Connect"))
                 self.SerialOnOffSwitch(False)
-                self.serialReceiveThread.stop()
             self.serialClickEventSignal.emit(self.SerialClickEvent.ConnectClickEvent, ret)
         elif objectName == self.serialReceiveClearPushButton.objectName():  # clear receive btn
             self.serialReceivePlainTextEdit.clear()
             self.receiveByteCount = 0
-            self.receiveByteArray.clear()
             self.serialClickEventSignal.emit(self.SerialClickEvent.ReceiveClearClickEvent, None)
 
     def SerialReceiveParamChangedCb(self, value):
         objectName = self.sender().objectName()
         if objectName == self.serialBaudrateComboBox.objectName():
             if value == 0:
-                data, ok = QInputDialog.getText(self, self.tr("Baudrate Customize:"), self.tr("Baudrate"), QLineEdit.EchoMode.Normal, "")
+                data, ok = QInputDialog.getText(
+                    self, self.tr("Baudrate Customize:"), self.tr("Baudrate"),
+                    QLineEdit.EchoMode.Normal, ""
+                )
                 if ok and data != "":
                     self.serialBaudrateComboBox.setItemText(0, data)
                 else:
                     self.serialBaudrateComboBox.setCurrentIndex(12)
             else:
                 self.serialBaudrateComboBox.setItemText(0, "custom")
-
             self.config.configHandle.setValue("baudrateIndex", value)
         elif objectName == self.serialReceiveHexCheckBox.objectName():
             text = self.serialReceivePlainTextEdit.toPlainText()
             if value:
-                text = text.encode(self.encoding, errors='replace')
-                text = ' '.join([f"{byte:02x}" for byte in text])
+                text = text_to_hex_display(text, self.encoding)
             else:
-                bytes_object = bytes.fromhex("".join(text.split()))
-                text = bytes_object.decode(self.encoding, errors='replace')
-            
+                text = hex_display_to_text(text, self.encoding)
             self.serialReceivePlainTextEdit.setPlainText(text)
             self.serialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
             self.config.configHandle.setValue("receiveHexEn", value)
@@ -237,10 +245,8 @@ class SerialForm(QFrame, Ui_serialForm):
             self.config.configHandle.setValue("checkSumIndex", value)
         elif objectName == self.serialReceiveTimestampCheckBox.objectName():
             self.config.configHandle.setValue("timestampEn", value)
-        
-        if self.serialHandle.serial is not None:
-            self.SerialOnOffSwitch(False)
-            self.SerialOnOffSwitch(True)
+
+        self._apply_serial_params_if_open()
 
     def SerialSendEventCb(self):
         objectName = self.sender().objectName()
@@ -248,15 +254,7 @@ class SerialForm(QFrame, Ui_serialForm):
             sendData = self.serialSendPlainTextEdit.toPlainText()
             if not sendData:
                 return
-            if self.serialSendHexCheckBox.isChecked():
-                hex_string = sendData.replace(' ', '')
-                if len(hex_string) % 2 != 0:
-                    padded_parts = [part.zfill(2) for part in hex_string[-1]]
-                    data = bytes.fromhex(hex_string[:-1] +"".join(padded_parts))
-                else:
-                    data = bytes.fromhex(hex_string)
-            else:
-                data = sendData.encode(self.encoding, errors='replace')
+            data = parse_send_payload(sendData, self.serialSendHexCheckBox.isChecked(), self.encoding)
             self.SerialSendDataPort(data)
         elif objectName == self.serialSendClearPushButton.objectName(): # send clean
             self.sendByteCount = 0
@@ -278,10 +276,9 @@ class SerialForm(QFrame, Ui_serialForm):
             if path:
                 try:
                     with open(path, "rb") as file:
-                        data = file.read()
-                        self.SerialSendDataPort(data)
+                        self.SerialSendDataPort(file.read())
                 except IOError:
-                    print(f"Can't open this file: {file_name}")
+                    logger.error("Can't open this file: %s", path)
         elif objectName == self.serialFilePathSaveSelectPushButton.objectName():
             file = QFileDialog.getSaveFileName(self, "Please select the save file", "", "files(*)")
             if file[0]:
@@ -293,7 +290,7 @@ class SerialForm(QFrame, Ui_serialForm):
                 button_text = self.tr("Stop") if self.saveFileFlag else self.tr("Start")
                 self.serialFileSavePushButton.setText(button_text)
                 if self.saveFileFlag:
-                    self.saveFile = open(path, 'a')
+                    self.saveFile = open(path, 'a', encoding='utf-8')
                 else:
                     self.saveFile.close()
 
@@ -314,61 +311,56 @@ class SerialForm(QFrame, Ui_serialForm):
             else:
                 self.serialHardFlowControlGroupBox.setEnabled(True)
             self.config.configHandle.setValue("xonxoff", value)
+            self._apply_serial_params_if_open()
         elif objectName == self.serialHardFlowControlDSRDTRCheckBox.objectName():
             if value != 0 or self.serialHardFlowControlRTSCTSCheckBox.isChecked():
                 self.serialSoftFlowControlGroupBox.setEnabled(False)
             else:
                 self.serialSoftFlowControlGroupBox.setEnabled(True)
             self.config.configHandle.setValue("dsrdtr", value)
+            self._apply_serial_params_if_open()
         elif objectName == self.serialHardFlowControlRTSCTSCheckBox.objectName():
             if value != 0 or self.serialHardFlowControlDSRDTRCheckBox.isChecked():
                 self.serialSoftFlowControlGroupBox.setEnabled(False)
             else:
                 self.serialSoftFlowControlGroupBox.setEnabled(True)
             self.config.configHandle.setValue("rtscts", value)
-        elif self.serialSendHexCheckBox.objectName():
+            self._apply_serial_params_if_open()
+        elif objectName == self.serialSendHexCheckBox.objectName():
             self.config.configHandle.setValue("sendHexEn", value)
             text = self.serialSendPlainTextEdit.toPlainText()
             if not text:
                 return
-            
             if value:
-                hex_list = [f"{byte:02x}" for byte in text.encode(self.encoding, errors='replace')]
-                convertText = str(hex_list)
+                convertText = text_to_hex_display(text, self.encoding)
             else:
-                byte_array = bytearray.fromhex(text)
-                convertText = byte_array.decode(self.encoding, errors='replace')
-            
+                convertText = hex_display_to_text(text, self.encoding)
             self.serialSendPlainTextEdit.setPlainText(convertText)
             self.serialSendPlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
 
     def SerialSendTextChangeCb(self, position, charsRemoved, charsAdded):
-        if not self.serialSendHexCheckBox.isChecked():
+        if not self.serialSendHexCheckBox.isChecked() or charsAdded <= 0:
             return
-        
-        if charsAdded > 0:
-            beforeText = self.serialSendPlainTextEdit.toPlainText()[:position]
-            text = self.serialSendPlainTextEdit.toPlainText()[position:position+charsAdded]
-            afterText = self.serialSendPlainTextEdit.toPlainText()[position+charsAdded:]
-            
-            newText = ""
-            for letter in text:
-                if self.hex_pattern.match(letter):
-                    newText += letter
 
-            newText = beforeText+newText+afterText
+        plain_text = self.serialSendPlainTextEdit.toPlainText()
+        before_text = plain_text[:position]
+        text = plain_text[position:position + charsAdded]
+        after_text = plain_text[position + charsAdded:]
 
-            cursor = self.serialSendPlainTextEdit.textCursor()
+        filtered = "".join(letter for letter in text if self.hex_pattern.match(letter))
+        if filtered == text:
+            return
 
-            old_position = cursor.position()
-            self.serialSendPlainTextEdit.document().blockSignals(True)
-            self.serialSendPlainTextEdit.setPlainText(newText)
-            self.serialSendPlainTextEdit.document().blockSignals(False)
+        new_text = before_text + filtered + after_text
+        cursor = self.serialSendPlainTextEdit.textCursor()
+        old_position = cursor.position()
 
-            cursor.setPosition(old_position)
-            self.serialSendPlainTextEdit.setTextCursor(cursor)
+        self.serialSendPlainTextEdit.document().blockSignals(True)
+        self.serialSendPlainTextEdit.setPlainText(new_text)
+        self.serialSendPlainTextEdit.document().blockSignals(False)
 
-
+        cursor.setPosition(old_position)
+        self.serialSendPlainTextEdit.setTextCursor(cursor)
 
     def UiInit(self):
         # receive ui init

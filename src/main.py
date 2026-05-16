@@ -1,25 +1,30 @@
 import sys
+import logging
 import resources.resources_rc
 import config
+import app_style
 
 from PyQt6.QtWidgets import QApplication, QMainWindow
-from PyQt6.QtGui import QFont, QPixmap
-from PyQt6.QtCore import QTranslator, QFile, QIODeviceBase, QTextStream
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import QTranslator
 
 from ui.Ui_main import Ui_mainWindow
 from settingForm import SettingForm
 from serialForm import SerialForm
 
+logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
+
+
 class MainForm(QMainWindow, Ui_mainWindow):
     def closeEvent(self, event):
         self.serialForm.closeEvent(event)
 
-    def __init__(self) -> None:
+    def __init__(self, translator=None) -> None:
         super().__init__()
         self.setupUi(self)
 
         self.appInstance = QApplication.instance()
-        self.translator = QTranslator()
+        self.translator = translator or QTranslator()
         self.config = config.ConfigManager()
         self.configParam = self.config.Load()
 
@@ -31,7 +36,6 @@ class MainForm(QMainWindow, Ui_mainWindow):
         self.serialForm.serialClickEventSignal.connect(self.mainSerialClickEventCb)
         self.mainStatusBar.serialStatusBarClickEventSignal.connect(self.mainSerialStatusBarClickEventCb)
         self.settingForm.serialSettingEventSignal.connect(self.mainSettingEventCb)
-
 
     def mainSerialClickEventCb(self, type, value):
         if type == self.serialForm.SerialClickEvent.ConnectClickEvent:
@@ -52,24 +56,18 @@ class MainForm(QMainWindow, Ui_mainWindow):
 
     def mainSettingEventCb(self, type, value) -> None:
         if type == self.settingForm.SerialSettingEvent.SettingLanguageChangeEvent:
-            self.translator.load(":translations/translations/"+ value + ".qm")
-            self.appInstance.installTranslator(self.translator)
+            app_style.install_language(self.appInstance, self.translator, value)
             self.settingForm.retranslateUi(self.settingForm)
             self.serialForm.retranslateUi(self.serialForm)
             self.retranslateUi(self)
         elif type == self.settingForm.SerialSettingEvent.SettingThemeChangeEvent:
-            qss_file = QFile(":sty/sty/" + value + ".qss") 
-            if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
-                stream = QTextStream(qss_file) 
-                self.appInstance.setStyleSheet(stream.readAll()) 
+            app_style.apply_theme(self.appInstance, value)
         elif type == self.settingForm.SerialSettingEvent.SettingFontChangeEvent:
-            self.appInstance.setFont(value)
-            qss_file = QFile(":sty/sty/" + self.config.configHandle.value("theme") + ".qss")
-            if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
-                stream = QTextStream(qss_file) 
-                self.appInstance.setStyleSheet(stream.readAll())
+            app_style.apply_font(self.appInstance, value)
+            app_style.apply_theme(self.appInstance, self.config.configHandle.value("theme"))
         elif type == self.settingForm.SerialSettingEvent.SettingEncodingChangeEvent:
             self.serialForm.encoding = value
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -79,22 +77,14 @@ if __name__ == '__main__':
     _config.Init()
 
     # load theme settings
-    qss_file = QFile(":sty/sty/" + _config.configParam["theme"] + ".qss") 
-    if qss_file.open(QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text): 
-        stream = QTextStream(qss_file) 
-        app.setStyleSheet(stream.readAll())
+    app_style.apply_theme(app, _config.configParam["theme"])
 
     # load language settings
     _trans = QTranslator()
-    _trans.load(":translations/translations/" + _config.configParam["language"] +".qm")
-
+    app_style.install_language(app, _trans, _config.configParam["language"])
     # load font settings
-    font = QFont()
-    font.fromString(_config.configParam["font"])
+    app_style.apply_font_from_config(app, _config.configParam["font"])
 
-    app.installTranslator(_trans)
-    app.setFont(font)
-
-    mainForm = MainForm()
+    mainForm = MainForm(_trans)
     mainForm.show()
     sys.exit(app.exec())

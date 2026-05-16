@@ -1,5 +1,8 @@
+import logging
 from serial.tools.list_ports import comports
 from PyQt6.QtWidgets import QComboBox
+
+logger = logging.getLogger(__name__)
 
 class SerialPortComboBox(QComboBox):
 
@@ -24,5 +27,6 @@ class SerialPortComboBox(QComboBox):
         try:
             portList = [str(port) for port in comports()]
             return portList
-        except Exception as err:
-            print("Error getting access to the serial device! The error message is:" + str(err))
+        except Exception:
+            logger.exception("Error getting access to serial devices")
+            return []
