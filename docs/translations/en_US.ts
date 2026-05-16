@@ -265,6 +265,22 @@
         <translation>Timestamp</translation>
     </message>
     <message>
+        <source>Auto Reconnect</source>
+        <translation>Auto Reconnect</translation>
+    </message>
+    <message>
+        <source>Connection lost, auto reconnecting...</source>
+        <translation>Connection lost, auto reconnecting...</translation>
+    </message>
+    <message>
+        <source>Connection lost.</source>
+        <translation>Connection lost.</translation>
+    </message>
+    <message>
+        <source>Auto reconnected.</source>
+        <translation>Auto reconnected.</translation>
+    </message>
+    <message>
         <location filename="src/ui/Ui_serial.py" line="262"/>
         <source>Connect</source>
         <translation>Connect</translation>

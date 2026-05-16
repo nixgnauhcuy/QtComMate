@@ -265,6 +265,22 @@
         <translation>時間戳</translation>
     </message>
     <message>
+        <source>Auto Reconnect</source>
+        <translation>自動重連</translation>
+    </message>
+    <message>
+        <source>Connection lost, auto reconnecting...</source>
+        <translation>連線已中斷，正在自動重連...</translation>
+    </message>
+    <message>
+        <source>Connection lost.</source>
+        <translation>連線已中斷。</translation>
+    </message>
+    <message>
+        <source>Auto reconnected.</source>
+        <translation>已自動重連。</translation>
+    </message>
+    <message>
         <location filename="src/ui/Ui_serial.py" line="262"/>
         <source>Connect</source>
         <translation>連接</translation>

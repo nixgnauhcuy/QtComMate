@@ -35,6 +35,8 @@ class ConfigManager(object):
             "xonxoff": '0',
             "rtscts": '0',
             "dsrdtr": '0',
+            "autoReconnectEn": '0',
+            "autoReconnectInterval": '1000',
             "font": '',
             "theme": 'light'
         }

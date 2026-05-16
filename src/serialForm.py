@@ -22,12 +22,14 @@ logger = logging.getLogger(__name__)
 
 RECEIVE_POLL_INTERVAL_MS = 30
 RECEIVE_DISPLAY_MAX_CHARS = 500_000
+AUTO_RECONNECT_INTERVAL_MS_DEFAULT = 1000
 
 
 class SerialForm(QFrame, Ui_serialForm):
 
     def closeEvent(self, event):
         if self.serialHandle.isOpen():
+            self.autoReconnectTimer.stop()
             self.receivePollTimer.stop()
             self.SerialSendRepeatTimer.stop()
             self.serialHandle.close()
@@ -56,11 +58,19 @@ class SerialForm(QFrame, Ui_serialForm):
         # receive
         self.last_recv_time = 0
         self.receiveByteCount = 0
+        self._manual_disconnect = False
+        self._awaiting_auto_reconnect = False
+        self._reconnect_port_device = ""
+        self._reconnect_port_hint = ""
 
         self.receivePollTimer = QTimer(self)
         self.receivePollTimer.timeout.connect(self._poll_serial_receive)
 
+        self.autoReconnectTimer = QTimer(self)
+        self.autoReconnectTimer.timeout.connect(self._try_auto_reconnect)
+
         self.serialConnectComPushButton.clicked.connect(self.SerialReceiveEventCb)
+        self.serialAutoReconnectCheckBox.stateChanged.connect(self._on_auto_reconnect_changed)
         self.serialReceiveClearPushButton.clicked.connect(self.SerialReceiveEventCb)
         self.serialReceiveHexCheckBox.stateChanged.connect(self.SerialReceiveParamChangedCb)
         self.serialBaudrateComboBox.currentIndexChanged.connect(self.SerialReceiveParamChangedCb)
@@ -105,13 +115,97 @@ class SerialForm(QFrame, Ui_serialForm):
             int(self.serialHardFlowControlDSRDTRCheckBox.isChecked()),
         )
 
+    def _auto_reconnect_interval_ms(self) -> int:
+        try:
+            interval = int(self.configParam.get("autoReconnectInterval", AUTO_RECONNECT_INTERVAL_MS_DEFAULT))
+        except (TypeError, ValueError):
+            interval = AUTO_RECONNECT_INTERVAL_MS_DEFAULT
+        return max(interval, 200)
+
+    def _is_auto_reconnect_enabled(self) -> bool:
+        return self.serialAutoReconnectCheckBox.isChecked()
+
+    def _save_reconnect_target(self) -> None:
+        text = self.serialComboBox.currentText()
+        self._reconnect_port_device = text.split()[0] if text else ""
+        self._reconnect_port_hint = text
+
+    def _on_auto_reconnect_changed(self, value) -> None:
+        self.config.configHandle.setValue("autoReconnectEn", int(bool(value)))
+        if not value:
+            self.autoReconnectTimer.stop()
+            self._awaiting_auto_reconnect = False
+
     def SerialOnOffSwitch(self, en) -> bool:
         self.last_recv_time = 0
         if en:
             port = self.serialComboBox.currentText().split()[0]
+            if not port:
+                return False
             baudrate, dataBit, checkSum, stopBit, xonxoff, rtscts, dsrdtr = self._current_serial_params()
             return self.serialHandle.open(port, baudrate, dataBit, checkSum, stopBit, xonxoff, rtscts, dsrdtr)
         return self.serialHandle.close()
+
+    def _open_serial_connection(self) -> bool:
+        if not self.serialComboBox.currentText():
+            return False
+        if self.SerialOnOffSwitch(True):
+            self.receivePollTimer.start(RECEIVE_POLL_INTERVAL_MS)
+            self.serialConnectComPushButton.setText(self.tr("Disconnect"))
+            self._save_reconnect_target()
+            self._awaiting_auto_reconnect = False
+            self.serialClickEventSignal.emit(self.SerialClickEvent.ConnectClickEvent, True)
+            return True
+        return False
+
+    def _close_serial_connection(self) -> None:
+        self.receivePollTimer.stop()
+        if self.serialHandle.isOpen():
+            self.serialHandle.close()
+        self.serialConnectComPushButton.setText(self.tr("Connect"))
+        self.serialClickEventSignal.emit(self.SerialClickEvent.ConnectClickEvent, False)
+
+    def _append_system_message(self, message: str) -> None:
+        stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.serialReceivePlainTextEdit.moveCursor(QTextCursor.MoveOperation.End)
+        self.serialReceivePlainTextEdit.insertPlainText(f"\n[{stamp}] {message}\n")
+        self.serialReceivePlainTextEdit.verticalScrollBar().setValue(
+            self.serialReceivePlainTextEdit.verticalScrollBar().maximum()
+        )
+        self._trim_receive_view()
+
+    def _on_connection_lost(self) -> None:
+        if self._manual_disconnect or not self.serialHandle.isOpen():
+            return
+
+        self._close_serial_connection()
+
+        if self._is_auto_reconnect_enabled():
+            self._awaiting_auto_reconnect = True
+            self.autoReconnectTimer.start(self._auto_reconnect_interval_ms())
+            self._append_system_message(self.tr("Connection lost, auto reconnecting..."))
+        else:
+            self._append_system_message(self.tr("Connection lost."))
+
+    def _try_auto_reconnect(self) -> None:
+        if not self._awaiting_auto_reconnect or not self._is_auto_reconnect_enabled():
+            self.autoReconnectTimer.stop()
+            return
+
+        if self.serialHandle.isOpen():
+            self.autoReconnectTimer.stop()
+            self._awaiting_auto_reconnect = False
+            return
+
+        display = self.serialComboBox.resolve_port_display(
+            self._reconnect_port_device, self._reconnect_port_hint
+        )
+        if display:
+            self.serialComboBox.select_port_display(display)
+
+        if self._open_serial_connection():
+            self.autoReconnectTimer.stop()
+            self._append_system_message(self.tr("Auto reconnected."))
 
     def _apply_serial_params_if_open(self) -> None:
         if not self.serialHandle.isOpen():
@@ -125,9 +219,9 @@ class SerialForm(QFrame, Ui_serialForm):
         if self.serialHandle.serial is None:
             return
         newline_mappings = {
-            1: b'\r\n',  # 回车换行
-            2: b'\r',    # 回车
-            3: b'\n',    # 换行
+            1: b'\r\n',  # 鍥炶溅鎹㈣
+            2: b'\r',    # 鍥炶溅
+            3: b'\n',    # 鎹㈣
         }
         newLine = newline_mappings.get(self.serialSendLineFeedComboBox.currentIndex(), b'')
         data += newLine
@@ -145,6 +239,10 @@ class SerialForm(QFrame, Ui_serialForm):
         self.SerialSendDataPort(data)
 
     def _poll_serial_receive(self):
+        if self.serialHandle.isOpen() and not self.serialHandle.check_connection_health():
+            self._on_connection_lost()
+            return
+
         data = self.serialHandle.read_all_pending()
         if not data:
             return
@@ -191,23 +289,20 @@ class SerialForm(QFrame, Ui_serialForm):
     def SerialReceiveEventCb(self):
         objectName = self.sender().objectName()
         if objectName == self.serialConnectComPushButton.objectName(): # connect btn
-            ret = False
             if self.serialHandle.serial is None and self.serialComboBox.currentText():
-                res = self.SerialOnOffSwitch(True)
-                if res:
-                    self.receivePollTimer.start(RECEIVE_POLL_INTERVAL_MS)
-                    self.serialConnectComPushButton.setText(self.tr("Disconnect"))
-                    ret = True
-                else:
+                self._manual_disconnect = False
+                self.autoReconnectTimer.stop()
+                self._awaiting_auto_reconnect = False
+                if not self._open_serial_connection():
                     self.warningMsgBox.setText(
                         self.tr("Could not open port, Please verify if the serial port is correct or if it is being occupied!!!")
                     )
                     self.warningMsgBox.exec()
             elif self.serialHandle.serial is not None:
-                self.receivePollTimer.stop()
-                self.serialConnectComPushButton.setText(self.tr("Connect"))
-                self.SerialOnOffSwitch(False)
-            self.serialClickEventSignal.emit(self.SerialClickEvent.ConnectClickEvent, ret)
+                self._manual_disconnect = True
+                self.autoReconnectTimer.stop()
+                self._awaiting_auto_reconnect = False
+                self._close_serial_connection()
         elif objectName == self.serialReceiveClearPushButton.objectName():  # clear receive btn
             self.serialReceivePlainTextEdit.clear()
             self.receiveByteCount = 0
@@ -370,6 +465,7 @@ class SerialForm(QFrame, Ui_serialForm):
         self.serialChecksumBitComboBox.setCurrentIndex(int(self.configParam["checkSumIndex"]))
         self.serialReceiveHexCheckBox.setChecked(int(self.configParam["receiveHexEn"]))
         self.serialReceiveTimestampCheckBox.setChecked(int(self.configParam["timestampEn"]))
+        self.serialAutoReconnectCheckBox.setChecked(int(self.configParam["autoReconnectEn"]))
 
         # send ui init
         self.warningMsgBox = QMessageBox()

@@ -8,14 +8,19 @@ logger = logging.getLogger(__name__)
 
 
 class SerialPortReceiveThread(threading.Thread):
-    def __init__(self, serial=None, readQueue=None):
+    def __init__(self, serial_port=None, read_queue=None, owner=None):
         super(SerialPortReceiveThread, self).__init__(daemon=True)
-        self.serial = serial
-        self.readQueue = readQueue
+        self.serial = serial_port
+        self.readQueue = read_queue
+        self.owner = owner
         self.stopEvent = threading.Event()
 
     def stop(self):
         self.stopEvent.set()
+
+    def _mark_connection_lost(self):
+        if self.owner is not None:
+            self.owner._connection_lost = True
 
     def run(self):
         while not self.stopEvent.is_set():
@@ -27,20 +32,29 @@ class SerialPortReceiveThread(threading.Thread):
                     self.readQueue.put(recData)
                 else:
                     time.sleep(0.01)  # No data, sleep to reduce CPU load.
+            except serial.SerialException:
+                logger.warning("Serial receive thread: connection lost")
+                self._mark_connection_lost()
+                break
             except Exception:
                 logger.exception("Serial receive thread error")
                 continue
 
 
 class SerialPortSendThread(threading.Thread):
-    def __init__(self, serial=None, writeQueue=None):
+    def __init__(self, serial_port=None, write_queue=None, owner=None):
         super(SerialPortSendThread, self).__init__(daemon=True)
-        self.serial = serial
-        self.writeQueue = writeQueue
+        self.serial = serial_port
+        self.writeQueue = write_queue
+        self.owner = owner
         self.stop_event = threading.Event()
 
     def stop(self):
         self.stop_event.set()
+
+    def _mark_connection_lost(self):
+        if self.owner is not None:
+            self.owner._connection_lost = True
 
     def run(self):
         while not self.stop_event.is_set():
@@ -49,6 +63,10 @@ class SerialPortSendThread(threading.Thread):
                 self.serial.write(send_data)
             except queue.Empty:
                 continue
+            except serial.SerialException:
+                logger.warning("Serial send thread: connection lost")
+                self._mark_connection_lost()
+                break
             except Exception:
                 logger.exception("Serial send thread error")
                 continue
@@ -60,21 +78,31 @@ class SerialPort(object):
         self.serial = None
         self.receiveQueue = queue.Queue(2000)
         self.sendQueue = queue.Queue(2000)
+        self._connection_lost = False
+        self.port_name = ""
 
     def open(self, port, baudrate, databit, checkbit, stopbit, xonxoff, rtscts, dsrdtr) -> bool:
         if self.serial is None:
             try:
+                self._connection_lost = False
+                self.port_name = port
                 self.serial = serial.Serial(
                     port, baudrate, databit, checkbit, stopbit,
                     None, xonxoff, rtscts, None, dsrdtr
                 )
-                self.receiveThread = SerialPortReceiveThread(self.serial, self.receiveQueue)
-                self.sendThread = SerialPortSendThread(self.serial, self.sendQueue)
+                self.receiveThread = SerialPortReceiveThread(
+                    self.serial, self.receiveQueue, self
+                )
+                self.sendThread = SerialPortSendThread(
+                    self.serial, self.sendQueue, self
+                )
                 self.receiveThread.start()
                 self.sendThread.start()
                 return True
             except Exception:
                 logger.exception("Failed to open serial port %s", port)
+                self.serial = None
+                self.port_name = ""
                 return False
         return False
 
@@ -106,13 +134,30 @@ class SerialPort(object):
             self.receiveThread.stop()
             self.sendThread.join(timeout=2.0)
             self.receiveThread.join(timeout=2.0)
-            self.serial.close()
+            try:
+                if self.serial.is_open:
+                    self.serial.close()
+            except Exception:
+                logger.exception("Error while closing serial port")
             self.serial = None
+            self.port_name = ""
             return True
         return False
 
     def isOpen(self) -> bool:
         return self.serial is not None
+
+    def check_connection_health(self) -> bool:
+        if self.serial is None:
+            return False
+        if self._connection_lost:
+            return False
+        if hasattr(self, "receiveThread") and not self.receiveThread.is_alive():
+            return False
+        try:
+            return self.serial.is_open
+        except Exception:
+            return False
 
     def write(self, data: bytes) -> None:
         if self.serial is not None:
